@@ -99,7 +99,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, spec)
 
     def test_get_spec_is_abspath_no_colon_with_path_in_package(self):
-        from pyramid import tests
+        from pyramid_chameleon import tests
         import os
         lookup = self._makeOne(None)
         f = __file__
@@ -124,7 +124,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, spec)
 
     def test_get_spec_is_abspath_with_colon_with_path_in_package(self):
-        from pyramid import tests
+        from pyramid_chameleon import tests
         import os
         lookup = self._makeOne(None)
         f = os.path.abspath(__file__)
@@ -276,7 +276,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
 
     def test___call__spec_notyetregistered(self):
         import os
-        from pyramid import tests
+        from pyramid_chameleon import tests
         module_name = tests.__name__
         relpath = 'test_renderers.py'
         renderer = {}
