@@ -2,7 +2,6 @@ import unittest
 
 from pyramid.testing import cleanUp
 from pyramid import testing
-from pyramid.compat import text_
 
 
 class TestTemplateRendererFactory(unittest.TestCase):
@@ -13,7 +12,7 @@ class TestTemplateRendererFactory(unittest.TestCase):
         cleanUp()
 
     def _callFUT(self, info, impl):
-        from pyramid_chameleon import template_renderer_factory
+        from pyramid_chameleon.renderer import template_renderer_factory
         return template_renderer_factory(info, impl)
 
     def test_lookup_found(self):
@@ -61,7 +60,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         testing.tearDown()
 
     def _makeOne(self, impl):
-        from pyramid_chameleon import ChameleonRendererLookup
+        from pyramid_chameleon.renderer import ChameleonRendererLookup
         return ChameleonRendererLookup(impl, self.config.registry)
 
     def _registerTemplateRenderer(self, renderer, name):

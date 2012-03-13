@@ -19,12 +19,11 @@ except ImportError:  # pragma: no cover
 from pyramid.interfaces import ITemplateRenderer
 
 from pyramid.decorator import reify
-from pyramid.path import caller_package
-from pyramid import renderers
+from pyramid_chameleon.renderer import template_renderer_factory
 
 
 def renderer_factory(info):
-    return renderers.template_renderer_factory(info, ZPTTemplateRenderer)
+    return template_renderer_factory(info, ZPTTemplateRenderer)
 
 
 @implementer(ITemplateRenderer)
@@ -53,99 +52,3 @@ class ZPTTemplateRenderer(object):
             raise ValueError('renderer was passed non-dictionary as value')
         result = self.template(**system)
         return result
-
-
-## ???: Can the rest of these go away?
-
-def get_renderer(path):
-    """ Return a callable object which can be used to render a
-    :term:`Chameleon` ZPT template using the template implied by the
-    ``path`` argument.  The ``path`` argument may be a
-    package-relative path, an absolute path, or a :term:`asset
-    specification`.
-
-    .. warning::
-
-       This API is deprecated in :app:`Pyramid` 1.0.  Use
-       :func:`pyramid.renderers.get_renderer` instead.
-    """
-    package = caller_package()
-    factory = renderers.RendererHelper(name=path, package=package)
-    return factory.get_renderer()
-
-deprecated(
-    'get_renderer',
-    '(pyramid.chameleon_zpt.get_renderer is deprecated '
-    'as of Pyramid 1.0; instead use pyramid.renderers.get_renderer)')
-
-
-def get_template(path):
-    """ Return the underyling object representing a :term:`Chameleon`
-    ZPT template using the template implied by the ``path`` argument.
-    The ``path`` argument may be a package-relative path, an absolute
-    path, or a :term:`asset specification`.
-
-    .. warning::
-
-       This API is deprecated in :app:`Pyramid` 1.0.  Use
-       the ``implementation()`` method of a template renderer retrieved via
-       :func:`pyramid.renderers.get_renderer` instead.
-    """
-    package = caller_package()
-    factory = renderers.RendererHelper(name=path, package=package)
-    return factory.get_renderer().implementation()
-
-deprecated(
-    'get_template',
-    '(pyramid.chameleon_zpt.get_template is deprecated '
-    'as of Pyramid 1.0; instead use '
-    'pyramid.renderers.get_renderer().implementation())')
-
-
-def render_template(path, **kw):
-    """ Render a :term:`Chameleon` ZPT template using the template
-    implied by the ``path`` argument.  The ``path`` argument may be a
-    package-relative path, an absolute path, or a :term:`asset
-    specification`.  The arguments in ``*kw`` are passed as top-level
-    names to the template, and so may be used within the template
-    itself.  Returns a string.
-
-    .. warning::
-
-       This API is deprecated in :app:`Pyramid` 1.0.  Use
-       :func:`pyramid.renderers.render` instead.
-    """
-    package = caller_package()
-    request = kw.pop('request', None)
-    renderer = renderers.RendererHelper(name=path, package=package)
-    return renderer.render(kw, None, request=request)
-
-deprecated(
-    'render_template',
-    '(pyramid.chameleon_zpt.render_template is deprecated as of Pyramid 1.0; '
-    'instead use pyramid.renderers.render)')
-
-
-def render_template_to_response(path, **kw):
-    """ Render a :term:`Chameleon` ZPT template using the template
-    implied by the ``path`` argument.  The ``path`` argument may be a
-    package-relative path, an absolute path, or a :term:`asset
-    specification`.  The arguments in ``*kw`` are passed as top-level
-    names to the template, and so may be used within the template
-    itself.  Returns a :term:`Response` object with the body as the
-    template result.
-
-    .. warning::
-
-       This API is deprecated in :app:`Pyramid` 1.0.  Use
-       :func:`pyramid.renderers.render_to_response` instead.
-    """
-    package = caller_package()
-    request = kw.pop('request', None)
-    renderer = renderers.RendererHelper(name=path, package=package)
-    return renderer.render_to_response(kw, None, request=request)
-
-deprecated(
-    'render_template_to_response',
-    '(pyramid.chameleon_zpt.render_template_to_response is deprecated; as of '
-    'Pyramid 1.0, instead use pyramid.renderers.render_to_response)')
