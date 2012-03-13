@@ -1,0 +1,3 @@
+include *.txt *.ini *.cfg *.rst
+recursive-include docs *.css Makefile *.gif *.rst *.py *.gitignore
+recursive-include pyramid_chameleon *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.*_tmpl *.png *.py *.pot *.cfg *.mo *.po *.ini
