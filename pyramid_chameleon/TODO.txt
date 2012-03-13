@@ -1,13 +1,8 @@
+TODO
+====
 
  - pyramid.config.i18n
  - pyramid.config.testing
  - pyramid.fixers.fix_bfg_imports
- - pyramid.interfaces
- - pyramid.renderers
- - pyramid.testing
- - pyramid.tests.test_chameleon_text
- - pyramid.tests.test_chameleon_zpt
- - pyramid.tests.test_config.test_i18n
- - pyramid.tests.test_config.test_views
- - pyramid.tests.test_integration
  - pyramid.tests.test_renderers
+[ ] - debugtoolbar requires mako, so it should depend on pyramid_mako (I think)
