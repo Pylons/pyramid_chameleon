@@ -3,16 +3,14 @@
 :mod:`pyramid_chameleon` API
 ----------------------------
 
-.. automodule:: pyramid_chameleon.chameleon_zpt
-.. automodule:: pyramid_chameleon.chameleon_text
-
+.. automodule:: pyramid_chameleon
 .. autofunction:: includeme
 
-.. autofunction:: add_chameleon_search_path
 
-.. autofunction:: add_chameleon_extension
+.. automodule:: pyramid_chameleon.interfaces
+.. autointerface:: IChameleonLookup
+.. autointerface:: IChameleonTranslate
 
-.. autofunction:: get_chameleon_environment
+.. automodule:: pyramid_chameleon.renderer
 
-.. autoclass:: ChameleonTemplateRenderer
-.. autoclass:: SmartAssetSpecLoader
+

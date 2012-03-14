@@ -10,6 +10,10 @@ from pyramid_chameleon.interfaces import IChameleonTranslate
 
 
 def includeme(config):
+    """
+    Adds renderers for .pt and .txt as well as registers a Chameleon
+    translation utility
+    """
     config.add_renderer('.pt', chameleon_zpt.renderer_factory)
     config.add_renderer('.txt', chameleon_text.renderer_factory)
     ctranslate = ChameleonTranslate(translator)

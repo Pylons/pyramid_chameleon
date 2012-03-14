@@ -56,7 +56,10 @@ if 'sphinx-build' in ' '.join(sys.argv): # protect against dumb importers
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = [
+            'sphinx.ext.autodoc',
+            'repoze.sphinx.autointerface'
+            ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -69,13 +72,13 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'pyramid_chameleon'
-copyright = '2011, Agendaless Consulting <chrism@plope.com>'
+copyright = '2012, Pylons project'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '1.3'
+version = '0.1dev'
 # The full version, including alpha/beta/rc tags.
 release = version
 

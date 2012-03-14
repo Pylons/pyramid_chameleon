@@ -1,6 +1,6 @@
-==============
+=================
 pyramid_chameleon
-==============
+=================
 
 Overview
 ========
@@ -36,95 +36,12 @@ Once activated, the following happens:
 #) Files with the ``.pt`` extension are considered to be
    :term:`Chameleon` templates.
 
-#) The :func:`pyramid_chameleon.add_chameleon_search_path` directive is added to
-   the :term:`configurator` instance.
-
-#) The :func:`pyramid_chameleon.add_chameleon_extension` directive is added to the
-   :term:`configurator` instance.
-
-#) The :func:`pyramid_chameleon.get_chameleon_environment` directive is added to the
-   :term:`configurator` instance.
-
-To setup the chameleon search path either one of the following steps must be taken:
-
-#) Add ``chameleon.directories`` to your ``.ini`` settings file using the pyramid
-   asset spec::
-
-     chameleon.directories = yourapp:templates
-
-#) Or Alternatively by using the ``add_chameleon_search_path`` directive
-   attached to your application's :term:`configurator` instance also using
-   the pyramid asset spec::
-
-     config.add_chameleon_search_path("yourapp:templates")
-
-.. warning::
-
-    If you do not explicitly configure your chameleon search path it will
-    default to the root of your application.  If configured in this way all
-    subsequent paths will need to be specified relative to the root of your
-    application's package.  For example:
-
-    Without the search path configured:
-
-    .. code-block:: text
-
-        @view_config(renderer='templates/mytemplate.pt')
-
-    With the search path configured:
-
-    .. code-block:: text
-
-       @view_config(renderer='mytemplate.pt')
-
 Usage
 =====
 
 Once :term:`pyramid_chameleon` been activated ``.pt`` templates
 can be loaded either by looking up names that would be found on
 the :term:`Chameleon` search path or by looking up asset specifications.
-
-Template Lookups
-----------------
-
-The default lookup mechanism for templates uses the :term:`Chameleon`
-search path. (specified with ``chameleon.directories`` or by using the
-add_chameleon_search_path directive on the :term:`configurator` instance.)
-
-Rendering :term:`Chameleon` templates with a view like this is typically
-done as follows (where the ``templates`` directory is expected to
-live in the search path):
-
-.. code-block:: python
- :linenos:
-
- from pyramid.view import view_config
-
- @view_config(renderer='mytemplate.pt')
- def myview(request):
-     return {'foo':1, 'bar':2}
-
-Rendering templates outside of a view (and without a request) can be
-done using the renderer api:
-
-.. code-block:: python
- :linenos:
-
- from pyramid.renderers import render_to_response
- render_to_response('mytemplate.pt', {'foo':1, 'bar':2})
-
-
-Asset Specification Lookups
----------------------------
-
-Looking up templates via asset specification is a feature specific
-to :term:`Pyramid`.  For further info please see `Understanding
-Asset Specifications
-<http://docs.pylonsproject.org/projects/pyramid/1.0/narr/assets.html#understanding-asset-specifications>`_.
-Overriding templates in this style uses the standard
-`pyramid asset overriding technique
-<http://docs.pylonsproject.org/projects/pyramid/1.0/narr/assets.html#overriding-assets>`_.
-
 
 Settings
 ========
@@ -141,32 +58,8 @@ reload_templates
   ``true`` or ``false`` representing whether Chameleon templates should be
   reloaded when they change on disk.  Useful for development to be ``true``.
 
-chameleon.directories
-
-  A list of directory names or a newline-delimited string with each line
-  representing a directory name.  These locations are where Chameleon will
-  search for templates.  Each can optionally be an absolute resource
-  specification (e.g. ``package:subdirectory/``).
-
-chameleon.input_encoding
-
-  The input encoding of templates.  Defaults to ``utf-8``.
-
-
-chameleon.extensions
-
-  A list of extension objects or a newline-delimited set of dotted import
-  locations where each line represents an extension.
-
-chameleon.filters
-
-  A dictionary mapping filter name to filter object, or a newline-delimted
-  string with each line in the format ``name = dotted.name.to.filter``
-  representing Chameleon filters.
-
-
 Creating a Chameleon ``Pyramid`` Project
-=====================================
+========================================
 
 NB: **To Be Done**
 
