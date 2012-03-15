@@ -17,8 +17,12 @@
 # make it absolute, like shown here.
 #sys.path.append(os.path.abspath('some/directory'))
 
+import datetime
 import sys
 import os
+
+from docutils import nodes
+from docutils import utils
 
 # Add and use Pylons theme
 if 'sphinx-build' in ' '.join(sys.argv): # protect against dumb importers
@@ -71,8 +75,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = 'pyramid_chameleon'
-copyright = '2012, Pylons project'
+project = 'pyramid_chameleon: Chameleon Bindings for the Pyramid Web Framework'
+copyright = '2011-%s, Pylons Project' % datetime.datetime.now().year
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -231,3 +235,16 @@ latex_logo = '.static/logo_hi.gif'
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+def app_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
+    """custom role for :app: marker, does nothing in particular except allow
+    :app:`Pyramid` to work (for later search and replace)."""
+    if 'class' in options:
+        assert 'classes' not in options
+        options['classes'] = options['class']
+        del options['class']
+    return [nodes.inline(rawtext, utils.unescape(text), **options)], []
+
+
+def setup(app):
+    app.add_role('app', app_role)

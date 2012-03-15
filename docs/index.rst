@@ -88,6 +88,7 @@ More Information
 .. toctree::
  :maxdepth: 1
 
+ templates.rst
  glossary.rst
  api.rst
 
