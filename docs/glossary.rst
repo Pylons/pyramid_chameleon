@@ -6,8 +6,19 @@ Glossary
 .. glossary::
    :sorted:
 
+  asset specification
+
+    A colon-delimited identifier for an `asset
+    <http://readthedocs.org/docs/pyramid/en/latest/glossary.html#term-asset>`_.
+    The colon separates a Python `package
+    <http://readthedocs.org/docs/pyramid/en/latest/glossary.html#term-package>`_
+    name from a package subpath. For example, the asset specification
+    ``my.package:static/baz.css`` identifies the file named ``baz.css`` in the
+    ``static`` subdirectory of the ``my.package`` Python `package`_.  See `Asset
+    Specifications`_ for more info.
+
   Chameleon
-    Chameleon is an open-source template engine written in Python_.
+    Chameleon_ is an open-source template engine written in Python_.
 
   context
     A resource in the resource tree that is found during `traversal
@@ -72,8 +83,7 @@ Glossary
     for information about response objects.
 
   scan
-
-    The term used by :app:`Pyramid` to define the process of importing and
+    The term used by :app:`pyramid_chameleon` to define the process of importing and
     examining all code in a Python package or module for `configuration
     decoration <http://readthedocs.org/docs/pyramid/en/latest/glossary.html
     #term-configuration-decoration>`_. See `declarative configuration
@@ -97,9 +107,9 @@ Glossary
     and ``request``: this calling convention is useful for traversal-based
     applications in which a :term:`context` is always very important.  A view
     callable is the primary mechanism by which a developer writes user interface
-    code within :app:`Pyramid`.  See `Views Chapter
+    code within :app:`pyramid_chameleon`.  See `Views Chapter
     <http://readthedocs.org/docs/pyramid/en/latest/narr/views.html>`_ for more
-    information about :app:`Pyramid` view callables. See `view callable in the
+    information about :app:`pyramid_chameleon` view callables. See `view callable in the
     Pyramid docs <http://readthedocs.org/docs/pyramid/en/latest/glossary.html
     #term-view- callable>`_.
 
@@ -107,7 +117,7 @@ Glossary
     View configuration is the act of associating a :term:`view callable` with
     configuration information.  This configuration information helps map a given
     :term:`request` to a particular view callable and it can influence the
-    response of a view callable.  :app:`Pyramid` views can be configured via
+    response of a view callable.  :app:`pyramid_chameleon` views can be configured via
     `imperative configuration
     <http://readthedocs.org/docs/pyramid/en/latest/glossary.html#term-
     imperative-configuration>`_, or by a special ``@view_config`` decorator
@@ -125,3 +135,4 @@ Glossary
 
 
 .. _Python: http://python.org
+.. _Chameleon: http://pagetemplates.org

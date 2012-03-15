@@ -18,8 +18,16 @@ Install using setuptools, e.g. (within a virtualenv)::
 Setup
 =====
 
-There are two ways to make sure that ``pyramid_chameleon`` is active.  They
+There are several ways to make sure that ``pyramid_chameleon`` is active.  They
 are completely equivalent:
+
+#) Add pyramid_chameleon to the `pyramid.includes` section of your applications
+   main configuration section::
+
+    [app:main]
+    ...
+    pyramid.includes = pyramid_chameleon
+
 
 #) Use the ``includeme`` function via ``config.include``::
 
@@ -43,6 +51,8 @@ Once :term:`pyramid_chameleon` been activated ``.pt`` templates
 can be loaded either by looking up names that would be found on
 the :term:`Chameleon` search path or by looking up asset specifications.
 
+
+
 Settings
 ========
 
@@ -57,6 +67,9 @@ reload_templates
 
   ``true`` or ``false`` representing whether Chameleon templates should be
   reloaded when they change on disk.  Useful for development to be ``true``.
+
+
+
 
 Creating a Chameleon ``Pyramid`` Project
 ========================================
@@ -77,9 +90,6 @@ On Pyramid 1.3::
 After it's created, you can visit the ``myproject`` directory and run
 ``setup.py develop``.  At that point you can start the application like any
 other Pyramid application.
-
-This is a good way to see a working Pyramid application that uses Chameleon, even
-if you wind up not using the result.
 
 
 More Information
