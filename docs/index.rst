@@ -39,10 +39,8 @@ are completely equivalent:
 
     <include package="pyramid_chameleon"/>
 
-Once activated, the following happens:
-
-#) Files with the ``.pt`` extension are considered to be
-   :term:`Chameleon` templates.
+Once activated, files with the ``.pt`` extension are considered to be
+:term:`Chameleon` templates.
 
 Usage
 =====
