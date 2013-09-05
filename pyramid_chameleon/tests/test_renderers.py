@@ -3,6 +3,7 @@ import unittest
 from pyramid.testing import cleanUp
 from pyramid import testing
 
+import re
 
 class TestTemplateRendererFactory(unittest.TestCase):
     def setUp(self):
@@ -74,10 +75,10 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, 'foo')
 
     def test_get_spec_not_abspath_no_colon_with_package(self):
-        from pyramid import tests
+        from pyramid_chameleon import tests
         lookup = self._makeOne(None)
         result = lookup.get_spec('foo', tests)
-        self.assertEqual(result, 'pyramid.tests:foo')
+        self.assertEqual(result, 'pyramid_chameleon.tests:foo')
 
     def test_get_spec_not_abspath_with_colon_no_package(self):
         lookup = self._makeOne(None)
@@ -85,7 +86,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, 'fudge:foo')
 
     def test_get_spec_not_abspath_with_colon_with_package(self):
-        from pyramid import tests
+        from pyramid_chameleon import tests
         lookup = self._makeOne(None)
         result = lookup.get_spec('fudge:foo', tests)
         self.assertEqual(result, 'fudge:foo')
@@ -107,7 +108,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, 'pyramid_chameleon.tests:%s' % os.path.split(f)[-1])
 
     def test_get_spec_is_abspath_no_colon_with_path_outside_package(self):
-        import venusian  # used only because it's outside of pyramid_chameleon.tests
+        import venusian # used only because it's outside of pyramid_chameleon.tests
         import os
         lookup = self._makeOne(None)
         f = __file__
@@ -133,7 +134,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, 'pyramid_chameleon.tests:%s/%s' % tuple(tail))
 
     def test_get_spec_is_abspath_with_colon_with_path_outside_package(self):
-        import venusian  # used only because it's outside of pyramid_chameleon.tests
+        import venusian # used only because it's outside of pyramid_chameleon.tests
         import os
         lookup = self._makeOne(None)
         spec = os.path.join(os.path.abspath(__file__), ':foo')
@@ -153,7 +154,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(lookup.debug, False)
 
     def test_debug_settings_not_None(self):
-        self.config.registry.settings = {'debug_templates': True}
+        self.config.registry.settings = {'debug_templates':True}
         lookup = self._makeOne(None)
         self.assertEqual(lookup.debug, True)
 
@@ -163,7 +164,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(lookup.auto_reload, False)
 
     def test_auto_reload_settings_not_None(self):
-        self.config.registry.settings = {'reload_templates': True}
+        self.config.registry.settings = {'reload_templates':True}
         lookup = self._makeOne(None)
         self.assertEqual(lookup.auto_reload, True)
 
@@ -171,11 +172,11 @@ class TestChameleonRendererLookup(unittest.TestCase):
         abspath = '/wont/exist'
         self._registerTemplateRenderer({}, abspath)
         info = DummyRendererInfo({
-            'name': abspath,
-            'package': None,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':abspath,
+            'package':None,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         lookup = self._makeOne(None)
         self.assertRaises(ValueError, lookup.__call__, info)
@@ -186,11 +187,11 @@ class TestChameleonRendererLookup(unittest.TestCase):
         renderer = {}
         self._registerTemplateRenderer(renderer, abspath)
         info = DummyRendererInfo({
-            'name': abspath,
-            'package': None,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':abspath,
+            'package':None,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         lookup = self._makeOne(None)
         result = lookup(info)
@@ -202,11 +203,11 @@ class TestChameleonRendererLookup(unittest.TestCase):
         renderer = {}
         factory = DummyFactory(renderer)
         info = DummyRendererInfo({
-            'name': abspath,
-            'package': None,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':abspath,
+            'package':None,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         lookup = self._makeOne(factory)
         result = lookup(info)
@@ -217,11 +218,11 @@ class TestChameleonRendererLookup(unittest.TestCase):
         spec = 'foo/bar'
         self._registerTemplateRenderer(renderer, spec)
         info = DummyRendererInfo({
-            'name': spec,
-            'package': None,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':spec,
+            'package':None,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         lookup = self._makeOne(None)
         result = lookup(info)
@@ -233,11 +234,11 @@ class TestChameleonRendererLookup(unittest.TestCase):
         spec = 'bar/baz'
         self._registerTemplateRenderer(renderer, 'pyramid_chameleon.tests:bar/baz')
         info = DummyRendererInfo({
-            'name': spec,
-            'package': pyramid_chameleon.tests,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':spec,
+            'package':pyramid_chameleon.tests,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         lookup = self._makeOne(None)
         result = lookup(info)
@@ -246,11 +247,11 @@ class TestChameleonRendererLookup(unittest.TestCase):
     def test___call__spec_notfound(self):
         spec = 'pyramid_chameleon.tests:wont/exist'
         info = DummyRendererInfo({
-            'name': spec,
-            'package': None,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':spec,
+            'package':None,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         lookup = self._makeOne(None)
         self.assertRaises(ValueError, lookup.__call__, info)
@@ -261,11 +262,11 @@ class TestChameleonRendererLookup(unittest.TestCase):
         relpath = 'test_renderers.py'
         spec = '%s:%s' % (module_name, relpath)
         info = DummyRendererInfo({
-            'name': spec,
-            'package': None,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':spec,
+            'package':None,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         renderer = {}
         self._registerTemplateRenderer(renderer, spec)
@@ -282,37 +283,67 @@ class TestChameleonRendererLookup(unittest.TestCase):
         factory = DummyFactory(renderer)
         spec = '%s:%s' % (module_name, relpath)
         info = DummyRendererInfo({
-            'name': spec,
-            'package': None,
-            'registry': self.config.registry,
-            'settings': {},
-            'type': 'type',
+            'name':spec,
+            'package':None,
+            'registry':self.config.registry,
+            'settings':{},
+            'type':'type',
             })
         lookup = self._makeOne(factory)
         result = lookup(info)
         self.assertTrue(result is renderer)
-        path = os.path.abspath(__file__).split('$')[0]  # jython
-        if path.endswith('.pyc'):  # pragma: no cover
+        path = os.path.abspath(__file__).split('$')[0] # jython
+        if path.endswith('.pyc'): # pragma: no cover
             path = path[:-1]
         self.assertTrue(factory.path.startswith(path))
-        self.assertEqual(factory.kw, {})
+        self.assertEqual(factory.kw, {'macro':None})
+
+    def test___call__spec_withmacro(self):
+        from pyramid.interfaces import ITemplateRenderer
+        import os
+        from pyramid_chameleon import tests
+        module_name = tests.__name__
+        relpath = 'fixtures/withmacro#foo.pt'
+        renderer = {}
+        factory = DummyFactory(renderer)
+        spec = '%s:%s' % (module_name, relpath)
+        reg = self.config.registry
+        info = DummyRendererInfo({
+            'name':spec,
+            'package':None,
+            'registry':reg,
+            'settings':{},
+            'type':'type',
+            })
+        lookup = self._makeOne(factory)
+        result = lookup(info)
+        self.assertTrue(result is renderer)
+        path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'fixtures',
+            'withmacro.pt')
+        self.assertTrue(factory.path.startswith(path))
+        self.assertEqual(factory.kw, {'macro':'foo'})
+        self.assertTrue(
+            reg.getUtility(ITemplateRenderer, name=spec) is renderer
+            )
 
     def test___call__reload_assets_true(self):
         import pyramid_chameleon.tests
         from pyramid.interfaces import ISettings
         from pyramid.interfaces import ITemplateRenderer
-        settings = {'reload_assets': True}
+        settings = {'reload_assets':True}
         self.config.registry.registerUtility(settings, ISettings)
         renderer = {}
         factory = DummyFactory(renderer)
         spec = 'test_renderers.py'
         reg = self.config.registry
         info = DummyRendererInfo({
-            'name': spec,
-            'package': pyramid_chameleon.tests,
-            'registry': reg,
-            'settings': settings,
-            'type': 'type',
+            'name':spec,
+            'package':pyramid_chameleon.tests,
+            'registry':reg,
+            'settings':settings,
+            'type':'type',
             })
         lookup = self._makeOne(factory)
         result = lookup(info)
@@ -324,17 +355,17 @@ class TestChameleonRendererLookup(unittest.TestCase):
     def test___call__reload_assets_false(self):
         import pyramid_chameleon.tests
         from pyramid.interfaces import ITemplateRenderer
-        settings = {'reload_assets': False}
+        settings = {'reload_assets':False}
         renderer = {}
         factory = DummyFactory(renderer)
         spec = 'test_renderers.py'
         reg = self.config.registry
         info = DummyRendererInfo({
-            'name': spec,
-            'package': pyramid_chameleon.tests,
-            'registry': reg,
-            'settings': settings,
-            'type': 'type',
+            'name':spec,
+            'package':pyramid_chameleon.tests,
+            'registry':reg,
+            'settings':settings,
+            'type':'type',
             })
         lookup = self._makeOne(factory)
         result = lookup(info)
@@ -344,15 +375,14 @@ class TestChameleonRendererLookup(unittest.TestCase):
                             None)
 
 
-# class Dummy:
-#     pass
+class Dummy:
+    pass
 
-# class DummyResponse:
-#     status = '200 OK'
-#     headerlist = ()
-#     app_iter = ()
-#     body = ''
-
+class DummyResponse:
+    status = '200 OK'
+    headerlist = ()
+    app_iter = ()
+    body = ''
 
 class DummyFactory:
     def __init__(self, renderer):
@@ -367,3 +397,4 @@ class DummyFactory:
 class DummyRendererInfo(object):
     def __init__(self, kw):
         self.__dict__.update(kw)
+
