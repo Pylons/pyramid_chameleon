@@ -1,42 +1,24 @@
-import sys
-
 from zope.interface import implementer
-
-from pyramid.compat import reraise
-
-try:
-    from chameleon.zpt.template import PageTextTemplateFile
-    # prevent pyflakes complaining about a redefinition below
-    PageTextTemplateFile
-except ImportError:  # pragma: no cover
-    exc_class, exc, tb = sys.exc_info()
-
-    # Chameleon doesn't work on non-CPython platforms
-    class PageTextTemplateFile(object):
-        def __init__(self, *arg, **kw):
-            reraise(ImportError, exc, tb)
 
 from pyramid.interfaces import ITemplateRenderer
 
 from pyramid.decorator import reify
-from pyramid import renderers
-
+from pyramid_chameleon import renderer
 
 def renderer_factory(info):
-    return renderers.template_renderer_factory(info, TextTemplateRenderer)
-
+    return renderer.template_renderer_factory(info, TextTemplateRenderer)
 
 @implementer(ITemplateRenderer)
 class TextTemplateRenderer(object):
-    def __init__(self, path, lookup):
+    def __init__(self, path, lookup, macro=None):
         self.path = path
         self.lookup = lookup
+        # text template renderers have no macros, so we ignore the
+        # macro arg
 
-    @reify  # avoid looking up reload_templates before manager pushed
+    @reify # avoid looking up reload_templates before manager pushed
     def template(self):
-        if sys.platform.startswith('java'):  # pragma: no cover
-            raise RuntimeError(
-                'Chameleon templates are not compatible with Jython')
+        from chameleon.zpt.template import PageTextTemplateFile
         return PageTextTemplateFile(self.path,
                                     auto_reload=self.lookup.auto_reload,
                                     debug=self.lookup.debug,
@@ -52,3 +34,4 @@ class TextTemplateRenderer(object):
             raise ValueError('renderer was passed non-dictionary as value')
         result = self.template(**system)
         return result
+
