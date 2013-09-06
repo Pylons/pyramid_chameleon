@@ -11,22 +11,19 @@ dynamic data provided by a :term:`view`.
 
 .. _using_chameleon_templates:
 
-
 Using Chameleon Templates
 -------------------------
 
-
-example:
+Quick example 1:
 
 .. code-block:: python
    :linenos:
 
-    @view_config(sample_view, renderer="cam:templates/foo.pt)
+    @view_config(sample_view, renderer="mypackage:templates/foo.pt)
     def sample_view(request):
        return {'foo':1, 'bar':2}
 
-
-example 2:
+Quick example 2:
 
 .. code-block:: python
     :linenos:
@@ -35,82 +32,13 @@ example 2:
        return {'foo':1, 'bar':2}
 
     def add_my_view(config):
-      config.add_view(sample_view, renderer="cam:templates/foo.pt")
+       config.add_view(sample_view, renderer="mypackage:templates/foo.pt")
 
-Then import and call `add_my_view` withing the :term:`Configurator`
-
-XXX: stopped here
-
-
-Because :term:`view callable` functions are typically the only code in
-:app:`Pyramid` that need to know anything about templates, and because view
-functions are very simple Python, you can use whatever templating system you're
-most comfortable with within :app:`Pyramid`.  Install the templating system,
-import its API functions into your views module, use those APIs to generate a
-string, then return that string as the body of a :app:`Pyramid`
-:term:`Response` object.
-
-For example, here's an example of using "raw" `Mako
-<http://www.makotemplates.org/>`_ from within a :app:`Pyramid` :term:`view`:
-
-.. ignore-next-block
-.. code-block:: python
-   :linenos:
-
-   from mako.template import Template
-   from pyramid.response import Response
-
-   def make_view(request):
-       template = Template(filename='/templates/template.mak')
-       result = template.render(name=request.params['name'])
-       response = Response(result)
-       return response
-
-You probably wouldn't use this particular snippet in a project, because it's
-easier to use the Mako renderer bindings which already exist in
-:app:`Pyramid`. But if your favorite templating system is not supported as a
-renderer extension for :app:`Pyramid`, you can create your own simple
-combination as shown above.
-
-.. note::
-
-   If you use third-party templating languages without cooperating
-   :app:`Pyramid` bindings directly within view callables, the
-   auto-template-reload strategy explained in
-   :ref:`reload_templates_section` will not be available, nor will the
-   template asset overriding capability explained in
-   :ref:`overriding_assets_section` be available, nor will it be
-   possible to use any template using that language as a
-   :term:`renderer`.  However, it's reasonably easy to write custom
-   templating system binding packages for use under :app:`Pyramid` so
-   that templates written in the language can be used as renderers.
-   See :ref:`adding_and_overriding_renderers` for instructions on how
-   to create your own template renderer and
-   :ref:`available_template_system_bindings` for example packages.
-
-If you need more control over the status code and content-type, or
-other response attributes from views that use direct templating, you
-may set attributes on the response that influence these values.
-
-Here's an example of changing the content-type and status of the
-response object returned by
-:func:`~pyramid.renderers.render_to_response`:
-
-.. code-block:: python
-   :linenos:
-
-   from pyramid.renderers import render_to_response
-
-   def sample_view(request):
-       response = render_to_response('templates/foo.pt',
-                                     {'foo':1, 'bar':2},
-                                     request=request)
-       response.content_type = 'text/plain'
-       response.status_int = 204
-       return response
+    # Then import and call `add_my_view` within the Pyramid code that uses 
+    # a  Configurator
 
 Here's an example of manufacturing a response object using the result
-of :func:`~pyramid.renderers.render` (a string):
+of :func:`~pyramid.renderers.render` (a string) using a Chameleon tempalte:
 
 .. code-block:: python
    :linenos:
@@ -126,167 +54,16 @@ of :func:`~pyramid.renderers.render` (a string):
        response.content_type = 'text/plain'
        return response
 
-.. index::
-   single: templates used as renderers
-   single: template renderers
-   single: renderer (template)
-
-
-.. index::
-   pair: renderer; system values
-
-.. _renderer_system_values:
-
-System Values Used During Rendering
------------------------------------
-
-When a template is rendered using
-:func:`~pyramid.renderers.render_to_response` or
-:func:`~pyramid.renderers.render`, the renderer representing the
-template will be provided with a number of *system* values.  These
-values are provided in a dictionary to the renderer and include:
-
-``context``
-  The current :app:`Pyramid` context if ``request`` was provided as
-  a keyword argument, or ``None``.
-
-``request``
-  The request provided as a keyword argument.
-
-``renderer_name``
-  The renderer name used to perform the rendering,
-  e.g. ``mypackage:templates/foo.pt``.
-
-``renderer_info``
-  An object implementing the :class:`pyramid.interfaces.IRendererInfo`
-  interface.  Basically, an object with the following attributes:
-  ``name``, ``package`` and ``type``.
-
-You can define more values which will be passed to every template
-executed as a result of rendering by defining :term:`renderer
-globals`.
-
-What any particular renderer does with these system values is up to the
-renderer itself, but most template renderers, including Chameleon and
-Mako renderers, make these names available as top-level template
-variables.
-
-.. index::
-   pair: renderer; templates
-
-.. _templates_used_as_renderers:
-
-Templates Used as Renderers via Configuration
----------------------------------------------
-
-An alternative to using :func:`~pyramid.renderers.render_to_response`
-to render templates manually in your view callable code, is
-to specify the template as a :term:`renderer` in your
-*view configuration*. This can be done with any of the
-templating languages supported by :app:`Pyramid`.
-
-To use a renderer via view configuration, specify a template
-:term:`asset specification` as the ``renderer`` argument, or
-attribute to the :term:`view configuration` of a :term:`view
-callable`.  Then return a *dictionary* from that view callable.  The
-dictionary items returned by the view callable will be made available
-to the renderer template as top-level names.
-
-The association of a template as a renderer for a :term:`view
-configuration` makes it possible to replace code within a :term:`view
-callable` that handles the rendering of a template.
-
-Here's an example of using a :class:`~pyramid.view.view_config`
-decorator to specify a :term:`view configuration` that names a
-template renderer:
-
-.. code-block:: python
-   :linenos:
-
-   from pyramid.view import view_config
-
-   @view_config(renderer='templates/foo.pt')
-   def my_view(request):
-       return {'foo':1, 'bar':2}
-
-.. note:: You do not need to supply the ``request`` value as a key
-   in the dictionary result returned from a renderer-configured view
-   callable. :app:`Pyramid` automatically supplies this value for
-   you so that the "most correct" system values are provided to
-   the renderer.
-
-.. warning::
-
-   The ``renderer`` argument to the ``@view_config`` configuration decorator
-   shown above is the template *path*.  In the example above, the path
-   ``templates/foo.pt`` is *relative*.  Relative to what, you ask?  Because
-   we're using a Chameleon renderer, it means "relative to the directory in
-   which the file which defines the view configuration lives".  In this case,
-   this is the directory containing the file that defines the ``my_view``
-   function.  View-configuration-relative asset specifications work only
-   in Chameleon, not in Mako templates.
-
-Similar renderer configuration can be done imperatively.  See
-:ref:`views_which_use_a_renderer`.  See also :ref:`built_in_renderers`.
-
-Although a renderer path is usually just a simple relative pathname, a path
-named as a renderer can be absolute, starting with a slash on UNIX or a drive
-letter prefix on Windows.  The path can alternately be an :term:`asset
-specification` in the form ``some.dotted.package_name:relative/path``, making
-it possible to address template assets which live in another package.
-
-Not just any template from any arbitrary templating system may be used as a
-renderer.  Bindings must exist specifically for :app:`Pyramid` to use a
-templating language template as a renderer.  Currently, :app:`Pyramid` has
-built-in support for two Chameleon templating languages: ZPT and text, and
-the Mako templating system.  See :ref:`built_in_renderers` for a discussion
-of their details.  :app:`Pyramid` also supports the use of :term:`Jinja2`
-templates as renderers.  See :ref:`available_template_system_bindings`.
-
-.. sidebar:: Why Use A Renderer via View Configuration
-
-   Using a renderer in view configuration is usually a better way to
-   render templates than using any rendering API directly from within a
-   :term:`view callable` because it makes the view callable more
-   unit-testable.  Views which use templating or rendering APIs directly
-   must return a :term:`Response` object.  Making testing assertions
-   about response objects is typically an indirect process, because it
-   means that your test code often needs to somehow parse information
-   out of the response body (often HTML).  View callables configured
-   with renderers externally via view configuration typically return a
-   dictionary, as above.  Making assertions about results returned in a
-   dictionary is almost always more direct and straightforward than
-   needing to parse HTML.
-
-By default, views rendered via a template renderer return a :term:`Response`
-object which has a *status code* of ``200 OK``, and a *content-type* of
-``text/html``.  To vary attributes of the response of a view that uses a
-renderer, such as the content-type, headers, or status attributes, you must
-use the API of the :class:`pyramid.response.Response` object exposed as
-``request.response`` within the view before returning the dictionary.  See
-:ref:`request_response_attr` for more information.
-
-The same set of system values are provided to templates rendered via a
-renderer view configuration as those provided to templates rendered
-imperatively.  See :ref:`renderer_system_values`.
-
-
-.. index::
-   single: Chameleon ZPT templates
-   single: ZPT templates (Chameleon)
-
 .. _chameleon_zpt_templates:
 
 :term:`Chameleon` ZPT Templates
 -------------------------------
 
-Like :term:`Zope`, :app:`Pyramid` uses :term:`ZPT` (Zope Page
-Templates) as its default templating language.  However,
-:app:`Pyramid` uses a different implementation of the :term:`ZPT`
-specification than Zope does: the :term:`Chameleon` templating
-engine. The Chameleon engine complies largely with the `Zope Page
-Template <http://wiki.zope.org/ZPT/FrontPage>`_ template
-specification.  However, it is significantly faster.
+:term:`Chameleon` is an implementation of :term:`ZPT` (Zope Page
+Templates) templating language.  The Chameleon engine complies largely with 
+the `Zope Page Template <http://wiki.zope.org/ZPT/FrontPage>`_ template
+specification.  However, it is significantly faster than the default
+implementation that is represented by ``zope.pagetemplates``.
 
 The language definition documentation for Chameleon ZPT-style
 templates is available from `the Chameleon website
@@ -337,8 +114,8 @@ Here's what a simple :term:`Chameleon` ZPT template used under
       </body>
     </html>
 
-Note the use of :term:`Genshi` -style ``${replacements}`` above.  This
-is one of the ways that :term:`Chameleon` ZPT differs from standard
+Note the use of :term:`Mako` and/or :term:`Genshi` -style ``${replacements}`` 
+above.  This is one of the ways that :term:`Chameleon` ZPT differs from standard
 ZPT.  The above template expects to find a ``project`` key in the set
 of keywords passed in to it via :func:`~pyramid.renderers.render` or
 :func:`~pyramid.renderers.render_to_response`. Typical ZPT
@@ -414,7 +191,7 @@ And ``templates/mytemplate.pt`` might look like so:
 Templating with :term:`Chameleon` Text Templates
 ------------------------------------------------
 
-:app:`Pyramid` also allows for the use of templates which are
+:term:`pyramid_chameleon` also allows for the use of templates which are
 composed entirely of non-XML text via :term:`Chameleon`.  To do so,
 you can create templates that are entirely composed of text except for
 ``${name}`` -style substitution points.
@@ -445,12 +222,10 @@ When the template is rendered, it will show:
 
    Hello, world!
 
-If you'd rather use templates directly within a view callable (without
-the indirection of using a renderer), see :ref:`chameleon_text_module`
-for the API description.
-
-See also :ref:`built_in_renderers` for more general information about
-renderers, including Chameleon text renderers.
+If you'd rather use templates directly within a view callable (without the
+indirection of using ``renderer`` in view configuration), see the functions 
+in :mod:`pyramid.renderers` for APIs which allow you to render templates
+imperatively.
 
 .. index::
    single: template renderer side effects
@@ -572,74 +347,6 @@ supporting internationalized units of text within :term:`Chameleon`
 templates.
 
 .. index::
-   single: Mako
-
-.. _mako_templates:
-
-Templating With Mako Templates
-------------------------------
-
-:term:`Mako` is a templating system written by Mike Bayer.  :app:`Pyramid`
-has built-in bindings for the Mako templating system.  The language
-definition documentation for Mako templates is available from `the Mako
-website <http://www.makotemplates.org/>`_.
-
-To use a Mako template, given a :term:`Mako` template file named ``foo.mak``
-in the ``templates`` subdirectory in your application package named
-``mypackage``, you can configure the template as a :term:`renderer` like so:
-
-.. code-block:: python
-   :linenos:
-
-   from pyramid.view import view_config
-
-   @view_config(renderer='foo.mak')
-   def my_view(request):
-       return {'project':'my project'}
-
-For the above view callable to work, the following setting needs to be
-present in the application stanza of your configuration's ``ini`` file:
-
-.. code-block:: ini
-
-   mako.directories = mypackage:templates
-
-This lets the Mako templating system know that it should look for templates
-in the ``templates`` subdirectory of the ``mypackage`` Python package.  See
-:ref:`mako_template_renderer_settings` for more information about the
-``mako.directories`` setting and other Mako-related settings that can be
-placed into the application's ``ini`` file.
-
-.. index::
-   single: Mako template (sample)
-
-A Sample Mako Template
-~~~~~~~~~~~~~~~~~~~~~~
-
-Here's what a simple :term:`Mako` template used under :app:`Pyramid` might
-look like:
-
-.. code-block:: xml
-   :linenos:
-
-    <html>
-    <head>
-        <title>${project} Application</title>
-    </head>
-      <body>
-         <h1 class="title">Welcome to <code>${project}</code>, an
-	  application generated by the <a
-	  href="http://docs.pylonsproject.org/projects/pyramid/current/"
-         >pyramid</a> web application framework.</h1>
-      </body>
-    </html>
-
-This template doesn't use any advanced features of Mako, only the
-``${}`` replacement syntax for names that are passed in as
-:term:`renderer globals`.  See the `the Mako documentation
-<http://www.makotemplates.org/>`_ to use more advanced features.
-
-.. index::
    single: automatic reloading of templates
    single: template automatic reload
 
@@ -680,18 +387,18 @@ application's configuration section, e.g.:
   use = egg:MyProject
   pyramid.reload_templates = true
 
-.. index::
-   single: template system bindings
-   single: Jinja2
+Changing the Content-Type of a Chameleon-Renderered Response
+------------------------------------------------------------
 
-.. _available_template_system_bindings:
+Here's an example of changing the content-type and status of the
+response object returned by a Chameleon-rendered Pyramid view:
 
-Available Add-On Template System Bindings
------------------------------------------
+.. code-block:: python
+   :linenos:
 
-Jinja2 template bindings are available for :app:`Pyramid` in the
-``pyramid_jinja2`` package. You can get the latest release of
-this package from the
-`Python package index <http://pypi.python.org/pypi/pyramid_jinja2>`_
-(pypi).
+   @view_config(renderer='foo.pt')
+   def sample_view(request):
+       request.response.content_type = 'text/plain'
+       response.status_int = 204
+       return response
 
