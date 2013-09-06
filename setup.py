@@ -7,8 +7,8 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'pyramid>=1.4',
-    'Chameleon>=2.8.0',
+    'pyramid',
+    'Chameleon',
     ]
 
 docs_extras = [

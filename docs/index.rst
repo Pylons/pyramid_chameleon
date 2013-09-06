@@ -5,8 +5,9 @@ pyramid_chameleon
 Overview
 ========
 
-:term:`pyramid_chameleon` is a set of bindings that make templates written for the
-:term:`Chameleon` templating system work under the :term:`Pyramid` web framework.
+:term:`pyramid_chameleon` is a set of bindings that make templates written for 
+the :term:`Chameleon` templating system work under the Pyramid web 
+framework.
 
 Installation
 ============
@@ -33,12 +34,6 @@ are completely equivalent:
 
     config.include('pyramid_chameleon')
 
-#) If you're using ``pyramid_zcml`` instead of imperative configuration,
-   ensure that some ZCML file with an analogue of the following contents is
-   executed by your Pyramid application::
-
-    <include package="pyramid_chameleon"/>
-
 Once activated, files with the ``.pt`` extension are considered to be
 :term:`Chameleon` templates.
 
@@ -48,8 +43,6 @@ Usage
 Once :term:`pyramid_chameleon` been activated ``.pt`` templates
 can be loaded either by looking up names that would be found on
 the :term:`Chameleon` search path or by looking up asset specifications.
-
-
 
 Settings
 ========
@@ -66,30 +59,6 @@ reload_templates
   ``true`` or ``false`` representing whether Chameleon templates should be
   reloaded when they change on disk.  Useful for development to be ``true``.
 
-
-
-
-Creating a Chameleon ``Pyramid`` Project
-========================================
-
-NB: **To Be Done**
-
-After you've got ``pyramid_chameleon`` installed, you can invoke one of the
-following commands to create a Chameleon-based Pyramid project.
-
-On Pyramid 1.0, 1.1, or 1.2::
-
-  $ $myvenv/bin/paster create -t pyramid_chameleon_starter myproject
-
-On Pyramid 1.3::
-
-  $ $myenv/bin/pcreate -s pyramid_chameleon_starter myproject
-
-After it's created, you can visit the ``myproject`` directory and run
-``setup.py develop``.  At that point you can start the application like any
-other Pyramid application.
-
-
 More Information
 ================
 
@@ -103,8 +72,8 @@ More Information
 Reporting Bugs / Development Versions
 =====================================
 
-Visit http://github.com/Pylons/pyramid_chameleon to download development or tagged
-versions.
+Visit http://github.com/Pylons/pyramid_chameleon to download development or 
+tagged versions.
 
 Visit http://github.com/Pylons/pyramid_chameleon/issues to report bugs.
 
