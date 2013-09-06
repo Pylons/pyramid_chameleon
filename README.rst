@@ -6,10 +6,3 @@ These are bindings for the `Chameleon templating system
 
 .. _Chameleon: http://pagetemplates.org/
 .. _Pyramid: http://docs.pylonshq.com/
-
-
-.. warning::
-
-   This repository was created with the idea that it would eventually move
-   Chameleon support out of Pyramid core, which has not happened yet.
-   It is now outdated.

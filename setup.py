@@ -3,12 +3,25 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.txt')).read()
+README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid>=1.4',
     'Chameleon>=2.8.0',
+    ]
+
+docs_extras = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface',
+    ]
+
+testing_extras = [
+    'nose',
+    'nose-selecttests',
+    'coverage',
+    'virtualenv', # for scaffolding tests
     ]
 
 setup(name='pyramid_chameleon',
@@ -36,6 +49,10 @@ setup(name='pyramid_chameleon',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
+      extras_require = {
+          'testing':testing_extras,
+          'docs':docs_extras,
+          },
       test_suite="pyramid_chameleon",
       entry_points="""\
       """,
