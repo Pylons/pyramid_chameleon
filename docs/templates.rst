@@ -1,18 +1,10 @@
-.. _templates_chapter:
-
-Templates
-=========
-
-A :term:`template` is a file on disk which can be used to render
-dynamic data provided by a :term:`view`.
-
 .. index::
    single: using chameleon templates
 
 .. _using_chameleon_templates:
 
 Using Chameleon Templates
--------------------------
+=========================
 
 Quick example 1:
 
