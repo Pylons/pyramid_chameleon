@@ -9,7 +9,7 @@ from pyramid_chameleon import (
 from pyramid_chameleon.interfaces import IChameleonTranslate
 
 
-def includeme(config):
+def includeme(config): # pragma: no cover
     """
     Adds renderers for .pt and .txt as well as registers a Chameleon
     translation utility
