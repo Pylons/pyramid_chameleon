@@ -1,31 +1,32 @@
+import sys
 import unittest
 
-from pyramid.testing import skip_on
 from pyramid import testing
 from pyramid.compat import text_type
-
 
 class Base(object):
     def setUp(self):
         self.config = testing.setUp()
-        from zope.deprecation import __show__
-        __show__.off()
 
     def tearDown(self):
         testing.tearDown()
-        from zope.deprecation import __show__
-        __show__.on()
 
     def _getTemplatePath(self, name):
         import os
         here = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(here, 'fixtures', name)
 
-    def _registerUtility(self, utility, iface, name=''):
-        reg = self.config.registry
-        reg.registerUtility(utility, iface, name=name)
-        return reg
+class Test_renderer_factory(Base, unittest.TestCase):
+    def _callFUT(self, info):
+        from pyramid_chameleon.chameleon_zpt import renderer_factory
+        return renderer_factory(info)
 
+    def test_it(self):
+        # this test is way too functional
+        from pyramid_chameleon.chameleon_zpt import ZPTTemplateRenderer
+        info = DummyInfo()
+        result = self._callFUT(info)
+        self.assertEqual(result.__class__, ZPTTemplateRenderer)
 
 class ZPTTemplateRendererTests(Base, unittest.TestCase):
     def _getTargetClass(self):
@@ -48,7 +49,6 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         from pyramid.interfaces import ITemplateRenderer
         verifyClass(ITemplateRenderer, self._getTargetClass())
 
-    @skip_on('java')
     def test_call(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
@@ -58,72 +58,64 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         self.assertEqual(result.rstrip('\n'),
                      '<div xmlns="http://www.w3.org/1999/xhtml">\n</div>')
 
-    @skip_on('java')
     def test_template_reified(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
         instance = self._makeOne(minimal, lookup)
         self.assertFalse('template' in instance.__dict__)
-        template = instance.template
+        template  = instance.template
         self.assertEqual(template, instance.__dict__['template'])
 
-    @skip_on('java')
     def test_template_with_ichameleon_translate(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
         instance = self._makeOne(minimal, lookup)
         self.assertFalse('template' in instance.__dict__)
-        template = instance.template
+        template  = instance.template
         self.assertEqual(template.translate, lookup.translate)
 
-    @skip_on('java')
     def test_template_with_debug_templates(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
         lookup.debug = True
         instance = self._makeOne(minimal, lookup)
         self.assertFalse('template' in instance.__dict__)
-        template = instance.template
+        template  = instance.template
         self.assertEqual(template.debug, True)
 
-    @skip_on('java')
     def test_template_without_debug_templates(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
         lookup.debug = False
         instance = self._makeOne(minimal, lookup)
         self.assertFalse('template' in instance.__dict__)
-        template = instance.template
+        template  = instance.template
         self.assertEqual(template.debug, False)
 
-    @skip_on('java')
     def test_template_with_reload_templates(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
         lookup.auto_reload = True
         instance = self._makeOne(minimal, lookup)
         self.assertFalse('template' in instance.__dict__)
-        template = instance.template
+        template  = instance.template
         self.assertEqual(template.auto_reload, True)
 
-    @skip_on('java')
     def test_template_without_reload_templates(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
         lookup.auto_reload = False
         instance = self._makeOne(minimal, lookup)
         self.assertFalse('template' in instance.__dict__)
-        template = instance.template
+        template  = instance.template
         self.assertEqual(template.auto_reload, False)
 
-    @skip_on('java')
     def test_call_with_nondict_value(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
         instance = self._makeOne(minimal, lookup)
         self.assertRaises(ValueError, instance, None, {})
 
-    @skip_on('java')
     def test_implementation(self):
         minimal = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
@@ -133,10 +125,51 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         self.assertEqual(result.rstrip('\n'),
                      '<div xmlns="http://www.w3.org/1999/xhtml">\n</div>')
 
+    def test_macro_supplied(self):
+        minimal = self._getTemplatePath('withmacro.pt')
+        lookup = DummyLookup()
+        instance = self._makeOne(minimal, lookup, macro='foo')
+        result = instance.implementation()()
+        self.assertEqual(result, '\n  Hello!\n')
+        
+    def test_macro_notsupplied(self):
+        minimal = self._getTemplatePath('withmacro.pt')
+        lookup = DummyLookup()
+        instance = self._makeOne(minimal, lookup)
+        result = instance.implementation()()
+        self.assertEqual(result,
+                         '<html>\nOutside macro\n\n  Hello!\n\n</html>\n\n')
 
+    def test_macro_template_reload(self):
+        minimal = self._getTemplatePath('withmacro.pt')
+        lookup = DummyLookup()
+        instance = self._makeOne(minimal, lookup, macro='foo')
+        result = instance.implementation()()
+        self.assertEqual(result, '\n  Hello!\n')
+        instance.template.cook(
+            '<html>\nOutside macro\n\n  Hello!\n\n</html>\n\n'
+            )
+        result = instance.implementation()()
+        self.assertEqual(result, '\n  Hello!\n')
+        
 class DummyLookup(object):
-    auto_reload = True
+    auto_reload=True
     debug = True
+    def translate(self, msg): pass
 
-    def translate(self, msg):
-        pass
+class DummyRegistry(object):
+    def queryUtility(self, iface, name):
+        self.queried = iface, name
+        return None
+
+    def registerUtility(self, impl, iface, name):
+        self.registered = impl, iface, name
+    
+class DummyInfo(object):
+    def __init__(self):
+        self.registry = DummyRegistry()
+        self.type = '.pt'
+        self.name = 'fixtures/minimal.pt'
+        self.package = sys.modules[__name__]
+        self.settings = {}
+    
