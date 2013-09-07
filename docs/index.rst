@@ -138,15 +138,13 @@ a :term:`renderer` like so:
    def my_view(request):
        return {'foo':1, 'bar':2}
 
-Two built-in renderers exist for :term:`Chameleon` templates.
-
-If the ``renderer`` parameter of a view configuration is an absolute path, a
-relative path or :term:`asset specification` which has a final path element
-with a filename extension of ``.pt``, the Chameleon ZPT renderer is used.  If
-the extension is ``.txt``, the :term:`Chameleon` text renderer is used.
-
-The behavior of these renderers is the same, except for the engine
-used to render the template.
+Two built-in renderers exist for :term:`Chameleon` templates.  If the
+``renderer`` parameter of a view configuration is an absolute path, a relative
+path or :term:`asset specification` which has a final path element with a
+filename extension of ``.pt``, the Chameleon ZPT renderer is used.  If the
+extension is ``.txt``, the :term:`Chameleon` text renderer is used.  The
+behavior of these renderers is the same, except for the engine used to render
+the template.
 
 When a Chameleon renderer is used in a view configuration, the view must return
 a :term:`Response` object or a Python *dictionary*.  If the view callable with
@@ -197,13 +195,13 @@ Here's what a simple :term:`Chameleon` ZPT template used under
       </body>
     </html>
 
-Note the use of :term:`Mako` and/or :term:`Genshi` -style ``${replacements}`` 
-above.  This is one of the ways that :term:`Chameleon` ZPT differs from standard
-ZPT.  The above template expects to find a ``project`` key in the set
+Note the use of :term:`Mako` and/or :term:`Genshi` -style ``${replacements}``
+above.  This is one of the ways that :term:`Chameleon` ZPT differs from
+standard ZPT.  The above template expects to find a ``project`` key in the set
 of keywords passed in to it via :func:`~pyramid.renderers.render` or
-:func:`~pyramid.renderers.render_to_response`. Typical ZPT
-attribute-based syntax (e.g. ``tal:content`` and ``tal:replace``) also
-works in these templates.
+:func:`~pyramid.renderers.render_to_response`. Typical ZPT attribute-based
+syntax (e.g. ``tal:content`` and ``tal:replace``) also works in these
+templates.
 
 .. index::
    single: ZPT macros
@@ -309,6 +307,35 @@ If you'd rather use templates directly within a view callable (without the
 indirection of using ``renderer`` in view configuration), see the functions 
 in :mod:`pyramid.renderers` for APIs which allow you to render templates
 imperatively.
+
+Template Variables provided by Pyramid
+--------------------------------------
+
+:term:`Pyramid` by default will provide a set of variables that are available
+within your templates, please see :ref:`renderer_system_values` for more
+information about those variables.
+
+Using A Chameleon Macro Name Within a Renderer Name
+---------------------------------------------------
+
+At times, you may want to render a macro inside of a Chameleon ZPT template
+instead of the full Chameleon ZPT template. To render the content of a
+``define-macro`` field inside a Chameleon ZPT template, given a Chameleon
+template file named ``foo.pt`` and a macro named ``bar`` defined within it
+(e.g. ``<div metal:define-macro="bar">...</div>``), you can configure the
+template as a :term:`renderer` like so:
+
+.. code-block:: python
+   :linenos:
+
+   from pyramid.view import view_config
+
+   @view_config(renderer='foo#bar.pt')
+   def my_view(request):
+       return {'project':'my project'}
+
+The above will render only the ``bar`` macro defined within the ``foo.pt``
+template instead of the entire template.
 
 .. index::
    single: template renderer side effects
@@ -419,17 +446,6 @@ displaying the arguments passed to the template itself.
    for more information.
 
 .. index::
-   single: template internationalization
-   single: internationalization (of templates)
-
-Chameleon Template Internationalization
----------------------------------------
-
-See :ref:`chameleon_translation_strings` for information about
-supporting internationalized units of text within :term:`Chameleon`
-templates.
-
-.. index::
    single: automatic reloading of templates
    single: template automatic reload
 
@@ -507,8 +523,58 @@ response object returned by a Chameleon-rendered Pyramid view:
 
 See :ref:`request_response_attr` for more information.
 
+.. index::
+   single: template internationalization
+   single: internationalization (of templates)
+
+Chameleon Template Internationalization
+---------------------------------------
+
+Chameleon supports internationalized units of text by reusing the translation
+facilities provided within Pyramid. See :ref:`i18n_chapter` for a general
+description of these facilities.
+
+Translating Template Content
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You need to add a few boilerplate lines to your application's ``setup.py``
+file in order to properly generate :term:`gettext` files from your
+application's templates.
+
+.. note:: See :ref:`project_narr` to learn about the
+  composition of an application's ``setup.py`` file.
+
+In particular, add the ``Babel`` and ``lingua`` distributions to the
+``install_requires`` list and insert a set of references to :term:`Babel`
+*message extractors* within the call to :func:`setuptools.setup` inside your
+application's ``setup.py`` file:
+
+.. code-block:: python
+   :linenos:
+
+    setup(name="mypackage",
+          # ...
+          install_requires = [
+                # ...
+                'Babel',
+                'lingua',
+                ],
+          message_extractors = { '.': [
+                ('**.py',   'lingua_python', None ),
+                ('**.pt',   'lingua_xml', None ),
+                ]},
+          )
+
+The ``message_extractors`` stanza placed into the ``setup.py`` file causes the
+Babel message catalog extraction machinery to also consider ``*.pt`` files when
+doing message id extraction.
+
+Once this is done you can generate ``.pot`` files derived from your Chameleon
+templates (and Python code).  See :ref:`extracting_messages` in the Pyramid
+documentation for general information about this.
+
 Chameleon Template Support for Translation Strings
---------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When a Pyramid "translation string" (see :ref:`i18n_chapter`) is used as the
 subject of textual rendering by a ``pyramid_chameleon`` template renderer, it
@@ -556,6 +622,37 @@ See
 
 You can always disuse this automatic translation and perform a more manual
 translation as described in :ref:`performing_a_translation`.
+
+Unit Testing
+------------
+
+When you are running unit tests, you will be required to use
+``config.include('pyramid_chameleon')`` to add ``pyramid_chameleon`` so that
+its renderers are added to the config and can be used.::
+
+    from pyramid import testing
+    from pyramid.response import Response
+    from pyramid.renderers import render
+
+    # The view we want to test
+    def some_view(request):
+        return Response(render('mypkg:templates/home.pt', {'var': 'testing'}))
+
+    class TestViews(unittest.TestCase):
+        def setUp(self):
+            self.config = testing.setUp()
+            self.config.include('pyramid_chameleon')
+
+        def tearDown(self):
+            testing.tearDown()
+
+        def test_some_view(self):
+            from pyramid.testing import DummyRequest
+            request = DummyRequest()
+            response = some_view(request)
+            # templates/home.mako starts with the standard <html> tag for HTML5
+            self.assertTrue('<html' in response.body)
+
 
 More Information
 ================
