@@ -18,19 +18,19 @@ class Base(object):
 
 class Test_renderer_factory(Base, unittest.TestCase):
     def _callFUT(self, info):
-        from pyramid_chameleon.chameleon_text import renderer_factory
+        from pyramid_chameleon.text import renderer_factory
         return renderer_factory(info)
 
     def test_it(self):
         # this test is way too functional
-        from pyramid_chameleon.chameleon_text import TextTemplateRenderer
+        from pyramid_chameleon.text import TextTemplateRenderer
         info = DummyInfo()
         result = self._callFUT(info)
         self.assertEqual(result.__class__, TextTemplateRenderer)
 
 class TextTemplateRendererTests(Base, unittest.TestCase):
     def _getTargetClass(self):
-        from pyramid_chameleon.chameleon_text import TextTemplateRenderer
+        from pyramid_chameleon.text import TextTemplateRenderer
         return TextTemplateRenderer
 
     def _makeOne(self, *arg, **kw):
