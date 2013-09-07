@@ -5,3 +5,4 @@ env*/
 nosetests.xml
 *.egg-info/
 *.pyc
+dist/
