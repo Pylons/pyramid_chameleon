@@ -37,15 +37,441 @@ They are completely equivalent:
 Once activated, files with the ``.pt`` extension are considered to be
 :term:`Chameleon` templates.
 
-Usage
-=====
+.. _using_chameleon_templates:
 
-Once :mod:`pyramid_chameleon` been activated ``.pt`` templates
-can be loaded either by looking up names that would be found on
-the :term:`Chameleon` search path or by looking up asset specifications.
+Using Chameleon Templates
+=========================
+
+Once :mod:`pyramid_chameleon` been activated ``.pt`` templates can be loaded
+either by looking up names that would be found on the :term:`Chameleon` search
+path or by looking up an absolute asset specifications.
+
+Quick example 1:
+
+.. code-block:: python
+   :linenos:
+
+    @view_config(sample_view, renderer="mypackage:templates/foo.pt)
+    def sample_view(request):
+       return {'foo':1, 'bar':2}
+
+Quick example 2:
+
+.. code-block:: python
+    :linenos:
+
+    def sample_view(request):
+       return {'foo':1, 'bar':2}
+
+    def add_my_view(config):
+       config.add_view(sample_view, renderer="mypackage:templates/foo.pt")
+
+    # Then import and call `add_my_view` within the Pyramid code that uses 
+    # a  Configurator
+
+Here's an example view configuration which uses a Chameleon ZPT renderer
+registered imperatively:
+
+.. code-block:: python
+   :linenos:
+
+    # config is an instance of pyramid.config.Configurator
+
+    config.add_view('myproject.views.hello_world',
+                    name='hello',
+                    context='myproject.resources.Hello',
+                    renderer='myproject:templates/foo.pt')
+
+Here's an example view configuration which uses a Chameleon text renderer
+registered imperatively:
+
+.. code-block:: python
+   :linenos:
+
+    config.add_view('myproject.views.hello_world',
+                    name='hello',
+                    context='myproject.resources.Hello',
+                    renderer='myproject:templates/foo.txt')
+
+Here's an example of manufacturing a response object using the result
+of :func:`~pyramid.renderers.render` (a string) using a Chameleon template:
+
+.. code-block:: python
+   :linenos:
+
+   from pyramid.renderers import render
+   from pyramid.response import Response
+
+   def sample_view(request):
+       result = render('mypackage:templates/foo.pt',
+                       {'foo':1, 'bar':2},
+                       request=request)
+       response = Response(result)
+       response.content_type = 'text/plain'
+       return response
+
+.. _chameleon_zpt_templates:
+
+Chameleon ZPT Templates
+-----------------------
+
+:term:`Chameleon` is an implementation of :term:`ZPT` (Zope Page
+Templates) templating language.  The Chameleon engine complies largely with 
+the `Zope Page Template <http://wiki.zope.org/ZPT/FrontPage>`_ template
+specification.  However, it is significantly faster than the default
+implementation that is represented by ``zope.pagetemplates``.
+
+The language definition documentation for Chameleon ZPT-style
+templates is available from `the Chameleon website
+<http://chameleon.repoze.org/>`_.
+
+Given a :term:`Chameleon` ZPT template named ``foo.pt`` in a directory
+in your application named ``templates``, you can render the template as
+a :term:`renderer` like so:
+
+.. code-block:: python
+   :linenos:
+
+   from pyramid.view import view_config
+
+   @view_config(renderer='templates/foo.pt')
+   def my_view(request):
+       return {'foo':1, 'bar':2}
+
+Two built-in renderers exist for :term:`Chameleon` templates.
+
+If the ``renderer`` parameter of a view configuration is an absolute path, a
+relative path or :term:`asset specification` which has a final path element
+with a filename extension of ``.pt``, the Chameleon ZPT renderer is used.  If
+the extension is ``.txt``, the :term:`Chameleon` text renderer is used.
+
+The behavior of these renderers is the same, except for the engine
+used to render the template.
+
+When a Chameleon renderer is used in a view configuration, the view must return
+a :term:`Response` object or a Python *dictionary*.  If the view callable with
+an associated template returns a Python dictionary, the named template will be
+passed the dictionary as its keyword arguments, and the template renderer
+implementation will return the resulting rendered template in a response to the
+user.  If the view callable returns anything but a Response object or a
+dictionary, an error will be raised.
+
+Before passing keywords to the template, the keyword arguments derived from
+the dictionary returned by the view are augmented.  The callable object --
+whatever object was used to define the view -- will be automatically inserted
+into the set of keyword arguments passed to the template as the ``view``
+keyword.  If the view callable was a class, the ``view`` keyword will be an
+instance of that class.  Also inserted into the keywords passed to the
+template are ``renderer_name`` (the string used in the ``renderer`` attribute
+of the directive), ``renderer_info`` (an object containing renderer-related
+information), ``context`` (the context resource of the view used to render
+the template), and ``request`` (the request passed to the view used to render
+the template).  ``request`` is also available as ``req`` in Pyramid 1.3+.
+
+.. index::
+   single: ZPT template (sample)
+
+A Sample ZPT Template
+~~~~~~~~~~~~~~~~~~~~~
+
+Here's what a simple :term:`Chameleon` ZPT template used under
+:app:`Pyramid` might look like:
+
+.. code-block:: xml
+   :linenos:
+
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:tal="http://xml.zope.org/namespaces/tal">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>${project} Application</title>
+    </head>
+      <body>
+         <h1 class="title">Welcome to <code>${project}</code>, an
+	  application generated by the <a
+	  href="http://docs.pylonsproject.org/projects/pyramid/current/"
+         >pyramid</a> web
+	  application framework.</h1>
+      </body>
+    </html>
+
+Note the use of :term:`Mako` and/or :term:`Genshi` -style ``${replacements}`` 
+above.  This is one of the ways that :term:`Chameleon` ZPT differs from standard
+ZPT.  The above template expects to find a ``project`` key in the set
+of keywords passed in to it via :func:`~pyramid.renderers.render` or
+:func:`~pyramid.renderers.render_to_response`. Typical ZPT
+attribute-based syntax (e.g. ``tal:content`` and ``tal:replace``) also
+works in these templates.
+
+.. index::
+   single: ZPT macros
+   single: Chameleon ZPT macros
+
+Using ZPT Macros in Pyramid
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When a :term:`renderer` is used to render a template, :app:`Pyramid` makes at
+least two top-level names available to the template by default: ``context``
+and ``request``.  One of the common needs in ZPT-based templates is to use
+one template's "macros" from within a different template.  In Zope, this is
+typically handled by retrieving the template from the ``context``.  But the
+context in :app:`Pyramid` is a :term:`resource` object, and templates cannot
+usually be retrieved from resources.  To use macros in :app:`Pyramid`, you
+need to make the macro template itself available to the rendered template by
+passing the macro template, or even the macro itself, *into* the rendered
+template.  To do this you can use the :func:`pyramid.renderers.get_renderer`
+API to retrieve the macro template, and pass it into the template being
+rendered via the dictionary returned by the view.  For example, using a
+:term:`view configuration` via a :class:`~pyramid.view.view_config` decorator
+that uses a :term:`renderer`:
+
+.. code-block:: python
+   :linenos:
+
+   from pyramid.renderers import get_renderer
+   from pyramid.view import view_config
+
+   @view_config(renderer='templates/mytemplate.pt')
+   def my_view(request):
+       main = get_renderer('templates/master.pt').implementation()
+       return {'main':main}
+
+Where ``templates/master.pt`` might look like so:
+
+.. code-block:: xml
+   :linenos:
+
+    <html xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:tal="http://xml.zope.org/namespaces/tal"
+          xmlns:metal="http://xml.zope.org/namespaces/metal">
+      <span metal:define-macro="hello">
+        <h1>
+          Hello <span metal:define-slot="name">Fred</span>!
+        </h1>
+      </span>
+    </html>
+
+And ``templates/mytemplate.pt`` might look like so:
+
+.. code-block:: xml
+   :linenos:
+
+    <html xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:tal="http://xml.zope.org/namespaces/tal"
+          xmlns:metal="http://xml.zope.org/namespaces/metal">
+      <span metal:use-macro="main.macros['hello']">
+        <span metal:fill-slot="name">Chris</span>
+      </span>
+    </html>
+
+.. index::
+   single: Chameleon text templates
+
+.. _chameleon_text_templates:
+
+Chameleon Text Templates
+------------------------
+
+:mod:`pyramid_chameleon` also allows for the use of templates which are
+composed entirely of non-XML text via :term:`Chameleon`.  To do so,
+you can create templates that are entirely composed of text except for
+``${name}`` -style substitution points.
+
+Here's an example usage of a Chameleon text template.  Create a file
+on disk named ``mytemplate.txt`` in your project's ``templates``
+directory with the following contents:
+
+.. code-block:: text
+
+   Hello, ${name}!
+
+Then in your project's ``views.py`` module, you can create a view
+which renders this template:
+
+.. code-block:: python
+   :linenos:
+
+   from pyramid.view import view_config
+
+   @view_config(renderer='templates/mytemplate.txt')
+   def my_view(request):
+       return {'name':'world'}
+
+When the template is rendered, it will show:
+
+.. code-block:: text
+
+   Hello, world!
+
+If you'd rather use templates directly within a view callable (without the
+indirection of using ``renderer`` in view configuration), see the functions 
+in :mod:`pyramid.renderers` for APIs which allow you to render templates
+imperatively.
+
+.. index::
+   single: template renderer side effects
+
+Side Effects of Rendering a Chameleon Template
+----------------------------------------------
+
+When a Chameleon template is rendered from a file, the templating
+engine writes a file in the same directory as the template file itself
+as a kind of cache, in order to do less work the next time the
+template needs to be read from disk. If you see "strange" ``.py``
+files showing up in your ``templates`` directory (or otherwise
+directly "next" to your templates), it is due to this feature.
+
+If you're using a version control system such as Subversion, you
+should configure it to ignore these files.  Here's the contents of the
+author's ``svn propedit svn:ignore .`` in each of my ``templates``
+directories.
+
+.. code-block:: text
+
+   *.pt.py
+   *.txt.py
+
+Note that I always name my Chameleon ZPT template files with a ``.pt``
+extension and my Chameleon text template files with a ``.txt``
+extension so that these ``svn:ignore`` patterns work.
+
+.. index::
+   pair: debugging; templates
+
+.. _debug_templates_section:
+
+Nicer Exceptions in Chameleon Templates
+---------------------------------------
+
+The exceptions raised by Chameleon templates when a rendering fails
+are sometimes less than helpful.  :app:`Pyramid` allows you to
+configure your application development environment so that exceptions
+generated by Chameleon during template compilation and execution will
+contain nicer debugging information.
+
+.. warning:: Template-debugging behavior is not recommended for
+             production sites as it slows renderings; it's usually
+             only desirable during development.
+
+In order to turn on template exception debugging, you can use an
+environment variable setting or a configuration file setting.
+
+To use an environment variable, start your application under a shell
+using the ``PYRAMID_DEBUG_TEMPLATES`` operating system environment
+variable set to ``1``, For example:
+
+.. code-block:: text
+
+  $ PYRAMID_DEBUG_TEMPLATES=1 bin/pserve myproject.ini
+
+To use a setting in the application ``.ini`` file for the same
+purpose, set the ``pyramid.debug_templates`` key to ``true`` within
+the application's configuration section, e.g.:
+
+.. code-block:: ini
+  :linenos:
+
+  [app:main]
+  use = egg:MyProject
+  pyramid.debug_templates = true
+
+With template debugging off, a :exc:`NameError` exception resulting
+from rendering a template with an undefined variable
+(e.g. ``${wrong}``) might end like this:
+
+.. code-block:: text
+
+  File "...", in __getitem__
+    raise NameError(key)
+  NameError: wrong
+
+Note that the exception has no information about which template was
+being rendered when the error occured.  But with template debugging
+on, an exception resulting from the same problem might end like so:
+
+.. code-block:: text
+
+    RuntimeError: Caught exception rendering template.
+     - Expression: ``wrong``
+     - Filename:   /home/fred/env/proj/proj/templates/mytemplate.pt
+     - Arguments:  renderer_name: proj:templates/mytemplate.pt
+                   template: <PageTemplateFile - at 0x1d2ecf0>
+                   xincludes: <XIncludes - at 0x1d3a130>
+                   request: <Request - at 0x1d2ecd0>
+                   project: proj
+                   macros: <Macros - at 0x1d3aed0>
+                   context: <MyResource None at 0x1d39130>
+                   view: <function my_view at 0x1d23570>
+
+    NameError: wrong
+
+The latter tells you which template the error occurred in, as well as
+displaying the arguments passed to the template itself.
+
+.. note::
+
+   Turning on ``pyramid.debug_templates`` has the same effect as using the
+   Chameleon environment variable ``CHAMELEON_DEBUG``.  See `Chameleon
+   Environment Variables
+   <http://chameleon.repoze.org/docs/latest/config.html#environment-variables>`_
+   for more information.
+
+.. index::
+   single: template internationalization
+   single: internationalization (of templates)
+
+Chameleon Template Internationalization
+---------------------------------------
+
+See :ref:`chameleon_translation_strings` for information about
+supporting internationalized units of text within :term:`Chameleon`
+templates.
+
+.. index::
+   single: automatic reloading of templates
+   single: template automatic reload
+
+.. _reload_templates_section:
+
+Automatically Reloading Templates
+---------------------------------
+
+It's often convenient to see changes you make to a template file
+appear immediately without needing to restart the application process.
+:app:`Pyramid` allows you to configure your application development
+environment so that a change to a template will be automatically
+detected, and the template will be reloaded on the next rendering.
+
+.. warning:: Auto-template-reload behavior is not recommended for
+             production sites as it slows rendering slightly; it's
+             usually only desirable during development.
+
+In order to turn on automatic reloading of templates, you can use an
+environment variable, or a configuration file setting.
+
+To use an environment variable, start your application under a shell
+using the ``PYRAMID_RELOAD_TEMPLATES`` operating system environment
+variable set to ``1``, For example:
+
+.. code-block:: text
+
+  $ PYRAMID_RELOAD_TEMPLATES=1 bin/pserve myproject.ini
+
+To use a setting in the application ``.ini`` file for the same
+purpose, set the ``pyramid.reload_templates`` key to ``true`` within the
+application's configuration section, e.g.:
+
+.. code-block:: ini
+  :linenos:
+
+  [app:main]
+  use = egg:MyProject
+  pyramid.reload_templates = true
 
 Settings
-========
+--------
 
 Chameleon derives additional settings to configure its template renderer. Many
 of these settings are optional and only need to be set if they should be
@@ -54,10 +480,82 @@ file used to configure the Pyramid application (in the ``app`` section
 representing your Pyramid app) or they can be passed directly within the
 ``settings`` argument passed to a Pyramid Configurator.
 
-reload_templates
+``pyramid.reload_templates``
 
   ``true`` or ``false`` representing whether Chameleon templates should be
   reloaded when they change on disk.  Useful for development to be ``true``.
+
+``pyramid.debug_templates``
+
+  ``true`` or ``false`` representing whether Chameleon templates should be
+   have extra debugging info turned on in tracebacks it generates.
+
+Changing the Content-Type of a Chameleon-Renderered Response
+------------------------------------------------------------
+
+Here's an example of changing the content-type and status of the
+response object returned by a Chameleon-rendered Pyramid view:
+
+.. code-block:: python
+   :linenos:
+
+   @view_config(renderer='foo.pt')
+   def sample_view(request):
+       request.response.content_type = 'text/plain'
+       response.status_int = 204
+       return response
+
+See :ref:`request_response_attr` for more information.
+
+Chameleon Template Support for Translation Strings
+--------------------------------------------------
+
+When a Pyramid "translation string" (see :ref:`i18n_chapter`) is used as the
+subject of textual rendering by a ``pyramid_chameleon`` template renderer, it
+will automatically be translated to the requesting user's language if a
+suitable translation exists. This is true of both the ZPT and text variants of
+the Chameleon template renderers.
+
+For example, in a Chameleon ZPT template, the translation string
+represented by "some_translation_string" in each example below will go
+through translation before being rendered:
+
+.. code-block:: xml
+   :linenos:
+
+   <span tal:content="some_translation_string"/>
+
+.. code-block:: xml
+   :linenos:
+
+   <span tal:replace="some_translation_string"/>
+
+.. code-block:: xml
+   :linenos:
+
+   <span>${some_translation_string}</span>
+
+.. code-block:: xml
+   :linenos:
+
+   <a tal:attributes="href some_translation_string">Click here</a>
+
+The features represented by attributes of the ``i18n`` namespace of
+Chameleon will also consult the :app:`Pyramid` translations.
+See
+`http://chameleon.repoze.org/docs/latest/i18n.html#the-i18n-namespace
+<http://chameleon.repoze.org/docs/latest/i18n.html#the-i18n-namespace>`_.
+
+.. note::
+
+   Unlike when Chameleon is used outside of :app:`Pyramid`, when it
+   is used *within* :app:`Pyramid`, it does not support use of the
+   ``zope.i18n`` translation framework.  Applications which use
+   :app:`Pyramid` should use the features documented in this
+   chapter rather than ``zope.i18n``.
+
+You can always disuse this automatic translation and perform a more manual
+translation as described in :ref:`performing_a_translation`.
 
 More Information
 ================
@@ -65,7 +563,6 @@ More Information
 .. toctree::
  :maxdepth: 1
 
- templates.rst
  glossary.rst
  api.rst
 
