@@ -3,8 +3,6 @@ import unittest
 from pyramid.testing import cleanUp
 from pyramid import testing
 
-import re
-
 class TestTemplateRendererFactory(unittest.TestCase):
     def setUp(self):
         self.config = cleanUp()
@@ -108,7 +106,8 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, 'pyramid_chameleon.tests:%s' % os.path.split(f)[-1])
 
     def test_get_spec_is_abspath_no_colon_with_path_outside_package(self):
-        import venusian # used only because it's outside of pyramid_chameleon.tests
+        # venusian used only because it's outside of pyramid_chameleon.tests
+        import venusian 
         import os
         lookup = self._makeOne(None)
         f = __file__
@@ -134,7 +133,8 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(result, 'pyramid_chameleon.tests:%s/%s' % tuple(tail))
 
     def test_get_spec_is_abspath_with_colon_with_path_outside_package(self):
-        import venusian # used only because it's outside of pyramid_chameleon.tests
+        # venusian used only because it's outside of pyramid_chameleon.tests
+        import venusian
         import os
         lookup = self._makeOne(None)
         spec = os.path.join(os.path.abspath(__file__), ':foo')
@@ -232,7 +232,8 @@ class TestChameleonRendererLookup(unittest.TestCase):
         renderer = {}
         import pyramid_chameleon.tests
         spec = 'bar/baz'
-        self._registerTemplateRenderer(renderer, 'pyramid_chameleon.tests:bar/baz')
+        self._registerTemplateRenderer(
+            renderer, 'pyramid_chameleon.tests:bar/baz')
         info = DummyRendererInfo({
             'name':spec,
             'package':pyramid_chameleon.tests,
