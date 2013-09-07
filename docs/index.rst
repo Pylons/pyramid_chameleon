@@ -5,8 +5,8 @@ pyramid_chameleon
 Overview
 ========
 
-:term:`pyramid_chameleon` is a set of bindings that make templates written for 
-the :term:`Chameleon` templating system work under the Pyramid web 
+:mod:`pyramid_chameleon` is a set of bindings that make templates written for
+the :term:`Chameleon` templating system work under the Pyramid web
 framework.
 
 Installation
@@ -19,8 +19,8 @@ Install using setuptools, e.g. (within a virtualenv)::
 Setup
 =====
 
-There are several ways to make sure that ``pyramid_chameleon`` is active.  They
-are completely equivalent:
+There are several ways to make sure that :mod:`pyramid_chameleon` is active.
+They are completely equivalent:
 
 #) Add pyramid_chameleon to the `pyramid.includes` section of your applications
    main configuration section::
@@ -40,7 +40,7 @@ Once activated, files with the ``.pt`` extension are considered to be
 Usage
 =====
 
-Once :term:`pyramid_chameleon` been activated ``.pt`` templates
+Once :mod:`pyramid_chameleon` been activated ``.pt`` templates
 can be loaded either by looking up names that would be found on
 the :term:`Chameleon` search path or by looking up asset specifications.
 

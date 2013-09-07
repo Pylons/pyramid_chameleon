@@ -29,8 +29,32 @@ Quick example 2:
     # Then import and call `add_my_view` within the Pyramid code that uses 
     # a  Configurator
 
+Here's an example view configuration which uses a Chameleon ZPT renderer
+registered imperatively:
+
+.. code-block:: python
+   :linenos:
+
+    # config is an instance of pyramid.config.Configurator
+
+    config.add_view('myproject.views.hello_world',
+                    name='hello',
+                    context='myproject.resources.Hello',
+                    renderer='myproject:templates/foo.pt')
+
+Here's an example view configuration which uses a Chameleon text renderer
+registered imperatively:
+
+.. code-block:: python
+   :linenos:
+
+    config.add_view('myproject.views.hello_world',
+                    name='hello',
+                    context='myproject.resources.Hello',
+                    renderer='myproject:templates/foo.txt')
+
 Here's an example of manufacturing a response object using the result
-of :func:`~pyramid.renderers.render` (a string) using a Chameleon tempalte:
+of :func:`~pyramid.renderers.render` (a string) using a Chameleon template:
 
 .. code-block:: python
    :linenos:
@@ -74,8 +98,35 @@ a :term:`renderer` like so:
    def my_view(request):
        return {'foo':1, 'bar':2}
 
-See also :ref:`built_in_renderers` for more general information about
-renderers, including Chameleon ZPT renderers.
+Two built-in renderers exist for :term:`Chameleon` templates.
+
+If the ``renderer`` parameter of a view configuration is an absolute path, a
+relative path or :term:`asset specification` which has a final path element
+with a filename extension of ``.pt``, the Chameleon ZPT renderer is used.  If
+the extension is ``.txt``, the :term:`Chameleon` text renderer is used.
+
+The behavior of these renderers is the same, except for the engine
+used to render the template.
+
+When a Chameleon renderer is used in a view configuration, the view must return
+a :term:`Response` object or a Python *dictionary*.  If the view callable with
+an associated template returns a Python dictionary, the named template will be
+passed the dictionary as its keyword arguments, and the template renderer
+implementation will return the resulting rendered template in a response to the
+user.  If the view callable returns anything but a Response object or a
+dictionary, an error will be raised.
+
+Before passing keywords to the template, the keyword arguments derived from
+the dictionary returned by the view are augmented.  The callable object --
+whatever object was used to define the view -- will be automatically inserted
+into the set of keyword arguments passed to the template as the ``view``
+keyword.  If the view callable was a class, the ``view`` keyword will be an
+instance of that class.  Also inserted into the keywords passed to the
+template are ``renderer_name`` (the string used in the ``renderer`` attribute
+of the directive), ``renderer_info`` (an object containing renderer-related
+information), ``context`` (the context resource of the view used to render
+the template), and ``request`` (the request passed to the view used to render
+the template).  ``request`` is also available as ``req`` in Pyramid 1.3+.
 
 .. index::
    single: ZPT template (sample)
@@ -183,7 +234,7 @@ And ``templates/mytemplate.pt`` might look like so:
 Templating with :term:`Chameleon` Text Templates
 ------------------------------------------------
 
-:term:`pyramid_chameleon` also allows for the use of templates which are
+:mod:`pyramid_chameleon` also allows for the use of templates which are
 composed entirely of non-XML text via :term:`Chameleon`.  To do so,
 you can create templates that are entirely composed of text except for
 ``${name}`` -style substitution points.
@@ -393,4 +444,7 @@ response object returned by a Chameleon-rendered Pyramid view:
        request.response.content_type = 'text/plain'
        response.status_int = 204
        return response
+
+See :ref:`request_response_attr` for more information.
+
 
