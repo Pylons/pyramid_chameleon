@@ -44,57 +44,32 @@ Using Chameleon Templates
 
 Once :mod:`pyramid_chameleon` been activated ``.pt`` templates can be loaded
 either by looking up names that would be found on the :term:`Chameleon` search
-path or by looking up an absolute asset specifications.
+path or by looking up an absolute asset specification (see
+:ref:`asset_specifications` for more information).
 
-Quick example 1:
+Quick example 1.  Look up a template named ``foo.pt`` within the ``templates``
+directory of a Python package named ``mypackage``:
 
 .. code-block:: python
    :linenos:
 
-    @view_config(sample_view, renderer="mypackage:templates/foo.pt)
+    @view_config(renderer="mypackage:templates/foo.pt)
     def sample_view(request):
        return {'foo':1, 'bar':2}
 
-Quick example 2:
+Quick example 2.  Look up a template named ``foo.pt`` within the ``templates``
+directory of the "current" Python package (the package in which this Python
+code is defined):
 
 .. code-block:: python
-    :linenos:
+   :linenos:
 
+    @view_config(renderer="templates/foo.pt)
     def sample_view(request):
        return {'foo':1, 'bar':2}
 
-    def add_my_view(config):
-       config.add_view(sample_view, renderer="mypackage:templates/foo.pt")
-
-    # Then import and call `add_my_view` within the Pyramid code that uses 
-    # a  Configurator
-
-Here's an example view configuration which uses a Chameleon ZPT renderer
-registered imperatively:
-
-.. code-block:: python
-   :linenos:
-
-    # config is an instance of pyramid.config.Configurator
-
-    config.add_view('myproject.views.hello_world',
-                    name='hello',
-                    context='myproject.resources.Hello',
-                    renderer='myproject:templates/foo.pt')
-
-Here's an example view configuration which uses a Chameleon text renderer
-registered imperatively:
-
-.. code-block:: python
-   :linenos:
-
-    config.add_view('myproject.views.hello_world',
-                    name='hello',
-                    context='myproject.resources.Hello',
-                    renderer='myproject:templates/foo.txt')
-
-Here's an example of manufacturing a response object using the result
-of :func:`~pyramid.renderers.render` (a string) using a Chameleon template:
+Quick example 3: manufacturing a response object using the result of
+:func:`~pyramid.renderers.render` (a string) using a Chameleon template:
 
 .. code-block:: python
    :linenos:
@@ -109,6 +84,26 @@ of :func:`~pyramid.renderers.render` (a string) using a Chameleon template:
        response = Response(result)
        response.content_type = 'text/plain'
        return response
+
+Here's an example view configuration which uses a Chameleon ZPT renderer
+registered imperatively:
+
+.. code-block:: python
+   :linenos:
+
+    # config is an instance of pyramid.config.Configurator
+
+    config.add_view('myproject.views.sample_view',
+                    renderer='myproject:templates/foo.pt')
+
+Here's an example view configuration which uses a Chameleon text renderer
+registered imperatively:
+
+.. code-block:: python
+   :linenos:
+
+    config.add_view('myproject.views.sample_view',
+                    renderer='myproject:templates/foo.txt')
 
 .. _chameleon_zpt_templates:
 
