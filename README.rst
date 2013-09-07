@@ -1,8 +1,9 @@
-Chameleon_  bindings for Pyramid
-============================================================
+Chameleon templating system Bindings for Pyramid
+=================================================
 
 These are bindings for the `Chameleon templating system
-<http://pagetemplates.org/>`_ for the Pyramid_ web framework.
+<http://pagetemplates.org/>`_ for the Pyramid_ web framework.  See
+http://docs.pylonsproject.org/projects/pyramid_chameleon/en/latest/ for
+documentation.
 
-.. _Chameleon: http://pagetemplates.org/
 .. _Pyramid: http://docs.pylonshq.com/
