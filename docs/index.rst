@@ -311,9 +311,9 @@ imperatively.
 Template Variables provided by Pyramid
 --------------------------------------
 
-:term:`Pyramid` by default will provide a set of variables that are available
-within your templates, please see :ref:`renderer_system_values` for more
-information about those variables.
+Pyramid by default will provide a set of variables that are available within
+your templates, please see :ref:`renderer_system_values` for more information
+about those variables.
 
 Using A Chameleon Macro Name Within a Renderer Name
 ---------------------------------------------------
