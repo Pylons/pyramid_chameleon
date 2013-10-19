@@ -1,10 +1,11 @@
 from zope.interface import implementer
 
-from pyramid.interfaces import ITemplateRenderer
 from pyramid.decorator import reify
-from pyramid_chameleon import renderer
 
 from chameleon.zpt.template import PageTemplateFile
+
+from . import renderer
+from .interfaces import ITemplateRenderer
 
 def renderer_factory(info):
     return renderer.template_renderer_factory(info, ZPTTemplateRenderer)

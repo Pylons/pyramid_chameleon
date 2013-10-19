@@ -34,7 +34,7 @@ class TestTemplateRendererFactory(unittest.TestCase):
         self.assertEqual(L, [info])
 
     def test_lookup_miss(self):
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         import os
         abspath = os.path.abspath(__file__)
         renderer = {}
@@ -63,7 +63,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         return ChameleonRendererLookup(impl, self.config.registry)
 
     def _registerTemplateRenderer(self, renderer, name):
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         self.config.registry.registerUtility(
             renderer, ITemplateRenderer, name=name)
 
@@ -300,7 +300,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(factory.kw, {'macro':None})
 
     def test___call__spec_withmacro(self):
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         import os
         from pyramid_chameleon import tests
         module_name = tests.__name__
@@ -332,7 +332,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
     def test___call__reload_assets_true(self):
         import pyramid_chameleon.tests
         from pyramid.interfaces import ISettings
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         settings = {'reload_assets':True}
         self.config.registry.registerUtility(settings, ISettings)
         renderer = {}
@@ -355,7 +355,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
 
     def test___call__reload_assets_false(self):
         import pyramid_chameleon.tests
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         settings = {'reload_assets':False}
         renderer = {}
         factory = DummyFactory(renderer)

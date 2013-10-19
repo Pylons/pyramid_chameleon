@@ -39,14 +39,18 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
 
     def test_instance_implements_ITemplate(self):
         from zope.interface.verify import verifyObject
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid.interfaces import IRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         path = self._getTemplatePath('minimal.pt')
         lookup = DummyLookup()
+        verifyObject(IRenderer, self._makeOne(path, lookup))
         verifyObject(ITemplateRenderer, self._makeOne(path, lookup))
 
     def test_class_implements_ITemplate(self):
         from zope.interface.verify import verifyClass
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid.interfaces import IRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
+        verifyClass(IRenderer, self._getTargetClass())
         verifyClass(ITemplateRenderer, self._getTargetClass())
 
     def test_call(self):

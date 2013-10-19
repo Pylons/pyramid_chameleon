@@ -1,3 +1,4 @@
+from pyramid.interfaces import IRenderer
 from zope.interface import (
     Attribute,
     Interface,
@@ -16,3 +17,11 @@ class IChameleonTranslate(Interface):
     def __call__(msgid, domain=None, mapping=None, context=None,
                  target_language=None, default=None):
         """ Translate a mess of arguments to a Unicode object """
+
+class ITemplateRenderer(IRenderer):
+    def implementation():
+        """ Return the object that the underlying templating system
+        uses to render the template; it is typically a callable that
+        accepts arbitrary keyword arguments and returns a string or
+        unicode object """
+
