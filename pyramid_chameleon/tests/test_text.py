@@ -39,15 +39,15 @@ class TextTemplateRendererTests(Base, unittest.TestCase):
 
     def test_instance_implements_ITemplate(self):
         from zope.interface.verify import verifyObject
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
         path = self._getTemplatePath('minimal.txt')
         lookup = DummyLookup()
-        verifyObject(ITemplateRenderer, self._makeOne(path, lookup))
+        verifyObject(IChameleonTemplateRenderer, self._makeOne(path, lookup))
 
     def test_class_implements_ITemplate(self):
         from zope.interface.verify import verifyClass
-        from pyramid.interfaces import ITemplateRenderer
-        verifyClass(ITemplateRenderer, self._getTargetClass())
+        from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
+        verifyClass(IChameleonTemplateRenderer, self._getTargetClass())
 
     def test_template_reified(self):
         minimal = self._getTemplatePath('minimal.txt')
@@ -134,7 +134,7 @@ class DummyRegistry(object):
 
     def registerUtility(self, impl, iface, name):
         self.registered = impl, iface, name
-    
+
 class DummyInfo(object):
     def __init__(self):
         self.registry = DummyRegistry()
@@ -142,4 +142,3 @@ class DummyInfo(object):
         self.name = 'fixtures/minimal.pt'
         self.package = sys.modules[__name__]
         self.settings = {}
-    

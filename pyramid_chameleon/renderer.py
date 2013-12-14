@@ -7,7 +7,6 @@ import pkg_resources
 from zope.interface import implementer
 
 from pyramid.asset import asset_spec_from_abspath
-from pyramid.interfaces import ITemplateRenderer
 from pyramid.path import (
     caller_package,
     package_path
@@ -15,7 +14,8 @@ from pyramid.path import (
 
 from pyramid_chameleon.interfaces import (
     IChameleonLookup,
-    IChameleonTranslate
+    IChameleonTranslate,
+    IChameleonTemplateRenderer
     )
 
 
@@ -91,16 +91,16 @@ class ChameleonRendererLookup(object):
             # 'spec' is an absolute filename
             if not os.path.exists(spec):
                 raise ValueError('Missing template file: %s' % spec)
-            renderer = registry.queryUtility(ITemplateRenderer, name=spec)
+            renderer = registry.queryUtility(IChameleonTemplateRenderer, name=spec)
             if renderer is None:
                 renderer = self.impl(spec, self, macro=None)
                 # cache the template
                 with self.lock:
                     registry.registerUtility(renderer,
-                                             ITemplateRenderer, name=spec)
+                                             IChameleonTemplateRenderer, name=spec)
         else:
             # spec is a package:relpath asset spec
-            renderer = registry.queryUtility(ITemplateRenderer, name=spec)
+            renderer = registry.queryUtility(IChameleonTemplateRenderer, name=spec)
             if renderer is None:
                 asset, macro, ext = self._crack_spec(spec)
                 spec_without_macro = '%s.%s' % (asset, ext)
@@ -123,7 +123,7 @@ class ChameleonRendererLookup(object):
                 if not settings.get('reload_assets'):
                     # cache the template
                     with self.lock:
-                        registry.registerUtility(renderer, ITemplateRenderer,
+                        registry.registerUtility(renderer, IChameleonTemplateRenderer,
                                                  name=spec)
 
         return renderer
@@ -138,4 +138,3 @@ def template_renderer_factory(info, impl, lock=registry_lock):
         with lock:
             registry.registerUtility(lookup, IChameleonLookup, name=info.type)
     return lookup(info)
-

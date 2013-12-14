@@ -34,12 +34,12 @@ class TestTemplateRendererFactory(unittest.TestCase):
         self.assertEqual(L, [info])
 
     def test_lookup_miss(self):
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
         import os
         abspath = os.path.abspath(__file__)
         renderer = {}
         self.config.registry.registerUtility(
-            renderer, ITemplateRenderer, name=abspath)
+            renderer, IChameleonTemplateRenderer, name=abspath)
         info = DummyRendererInfo({
             'name': abspath,
             'package': None,
@@ -63,9 +63,9 @@ class TestChameleonRendererLookup(unittest.TestCase):
         return ChameleonRendererLookup(impl, self.config.registry)
 
     def _registerTemplateRenderer(self, renderer, name):
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
         self.config.registry.registerUtility(
-            renderer, ITemplateRenderer, name=name)
+            renderer, IChameleonTemplateRenderer, name=name)
 
     def test_get_spec_not_abspath_no_colon_no_package(self):
         lookup = self._makeOne(None)
@@ -107,7 +107,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
 
     def test_get_spec_is_abspath_no_colon_with_path_outside_package(self):
         # venusian used only because it's outside of pyramid_chameleon.tests
-        import venusian 
+        import venusian
         import os
         lookup = self._makeOne(None)
         f = __file__
@@ -300,7 +300,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertEqual(factory.kw, {'macro':None})
 
     def test___call__spec_withmacro(self):
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
         import os
         from pyramid_chameleon import tests
         module_name = tests.__name__
@@ -326,13 +326,13 @@ class TestChameleonRendererLookup(unittest.TestCase):
         self.assertTrue(factory.path.startswith(path))
         self.assertEqual(factory.kw, {'macro':'foo'})
         self.assertTrue(
-            reg.getUtility(ITemplateRenderer, name=spec) is renderer
+            reg.getUtility(IChameleonTemplateRenderer, name=spec) is renderer
             )
 
     def test___call__reload_assets_true(self):
         import pyramid_chameleon.tests
         from pyramid.interfaces import ISettings
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
         settings = {'reload_assets':True}
         self.config.registry.registerUtility(settings, ISettings)
         renderer = {}
@@ -350,12 +350,12 @@ class TestChameleonRendererLookup(unittest.TestCase):
         result = lookup(info)
         self.assertTrue(result is renderer)
         spec = '%s:%s' % ('pyramid_chameleon.tests', 'test_renderers.py')
-        self.assertEqual(reg.queryUtility(ITemplateRenderer, name=spec),
+        self.assertEqual(reg.queryUtility(IChameleonTemplateRenderer, name=spec),
                          None)
 
     def test___call__reload_assets_false(self):
         import pyramid_chameleon.tests
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
         settings = {'reload_assets':False}
         renderer = {}
         factory = DummyFactory(renderer)
@@ -372,7 +372,7 @@ class TestChameleonRendererLookup(unittest.TestCase):
         result = lookup(info)
         self.assertTrue(result is renderer)
         spec = '%s:%s' % ('pyramid_chameleon.tests', 'test_renderers.py')
-        self.assertNotEqual(reg.queryUtility(ITemplateRenderer, name=spec),
+        self.assertNotEqual(reg.queryUtility(IChameleonTemplateRenderer, name=spec),
                             None)
 
 
@@ -398,4 +398,3 @@ class DummyFactory:
 class DummyRendererInfo(object):
     def __init__(self, kw):
         self.__dict__.update(kw)
-

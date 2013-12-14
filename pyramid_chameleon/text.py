@@ -1,6 +1,6 @@
 from zope.interface import implementer
 
-from pyramid.interfaces import ITemplateRenderer
+from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
 
 from pyramid.decorator import reify
 from pyramid_chameleon import renderer
@@ -8,7 +8,7 @@ from pyramid_chameleon import renderer
 def renderer_factory(info):
     return renderer.template_renderer_factory(info, TextTemplateRenderer)
 
-@implementer(ITemplateRenderer)
+@implementer(IChameleonTemplateRenderer)
 class TextTemplateRenderer(object):
     def __init__(self, path, lookup, macro=None):
         self.path = path
@@ -34,4 +34,3 @@ class TextTemplateRenderer(object):
             raise ValueError('renderer was passed non-dictionary as value')
         result = self.template(**system)
         return result
-
