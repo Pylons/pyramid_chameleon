@@ -18,8 +18,8 @@ class IChameleonTranslate(Interface):
         """ Translate a mess of arguments to a Unicode object """
 
 from zope.deprecation import __show__
+__show__.off()
 try:
-    __show__.off()
     # For backwards compatibility, as long as ITemplateRenderer
     # exists, we will still implement that.
     from pyramid.interfaces import ITemplateRenderer
