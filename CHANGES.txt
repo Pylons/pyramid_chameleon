@@ -1,5 +1,5 @@
-Unreleased
-----------
+0.2 (2014-02-09)
+----------------
 
 - Dropped dependency on ``nose-selecttests``.
 

@@ -24,7 +24,7 @@ testing_extras = [
     ]
 
 setup(name='pyramid_chameleon',
-      version='0.1',
+      version='0.2',
       description='pyramid_chameleon',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
