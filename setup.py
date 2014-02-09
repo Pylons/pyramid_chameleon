@@ -19,7 +19,6 @@ docs_extras = [
 
 testing_extras = [
     'nose',
-    'nose-selecttests',
     'coverage',
     'virtualenv', # for scaffolding tests
     ]
