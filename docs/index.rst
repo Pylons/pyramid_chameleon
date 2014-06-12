@@ -645,7 +645,7 @@ its renderers are added to the config and can be used.::
             from pyramid.testing import DummyRequest
             request = DummyRequest()
             response = some_view(request)
-            # templates/home.mako starts with the standard <html> tag for HTML5
+            # templates/home.pt starts with the standard <html> tag for HTML5
             self.assertTrue('<html' in response.body)
 
 
