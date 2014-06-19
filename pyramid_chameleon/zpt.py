@@ -1,6 +1,6 @@
 from zope.interface import implementer
 
-from pyramid.interfaces import ITemplateRenderer
+from pyramid_chameleon.interfaces import IChameleonTemplateRenderer
 from pyramid.decorator import reify
 from pyramid_chameleon import renderer
 
@@ -18,7 +18,7 @@ class PyramidPageTemplateFile(PageTemplateFile):
             macro_renderer = self.macros[self.macro].include
             self._render = macro_renderer
 
-@implementer(ITemplateRenderer)
+@implementer(IChameleonTemplateRenderer)
 class ZPTTemplateRenderer(object):
     def __init__(self, path, lookup, macro=None):
         self.path = path
@@ -46,4 +46,3 @@ class ZPTTemplateRenderer(object):
             raise ValueError('renderer was passed non-dictionary as value')
         result = self.template(**system)
         return result
-
