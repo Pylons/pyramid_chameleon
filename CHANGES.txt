@@ -4,6 +4,8 @@ Next release
 - Remove dependency on ``pyramid.interfaces.ITemplateRenderer`` (which is
   deprecated in Pyramid > 1.5).
 
+- Update Trove classifiers and tests to support Python 3.4.
+
 0.2 (2014-02-09)
 ----------------
 
