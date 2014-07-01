@@ -211,25 +211,11 @@ and ``request``.  One of the common needs in ZPT-based templates is to use
 one template's "macros" from within a different template.  In Zope, this is
 typically handled by retrieving the template from the ``context``.  But the
 context in :app:`Pyramid` is a :term:`resource` object, and templates cannot
-usually be retrieved from resources.  To use macros in :app:`Pyramid`, you
-need to make the macro template itself available to the rendered template by
-passing the macro template, or even the macro itself, *into* the rendered
-template.  To do this you can use the :func:`pyramid.renderers.get_renderer`
-API to retrieve the macro template, and pass it into the template being
-rendered via the dictionary returned by the view.  For example, using a
-:term:`view configuration` via a :class:`~pyramid.view.view_config` decorator
-that uses a :term:`renderer`:
+usually be retrieved from resources.  Instead you can use a :term:`Chameleon`
+``load`` TALES expression to load another template file either by its relative
+or absolute path. For example, using a macro defined in
+``templates/master.pt`` from ``templates/mytemplate.pt``:
 
-.. code-block:: python
-   :linenos:
-
-   from pyramid.renderers import get_renderer
-   from pyramid.view import view_config
-
-   @view_config(renderer='templates/mytemplate.pt')
-   def my_view(request):
-       main = get_renderer('templates/master.pt').implementation()
-       return {'main':main}
 
 Where ``templates/master.pt`` might look like so:
 
@@ -254,9 +240,45 @@ And ``templates/mytemplate.pt`` might look like so:
     <html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:tal="http://xml.zope.org/namespaces/tal"
           xmlns:metal="http://xml.zope.org/namespaces/metal">
-      <span metal:use-macro="main.macros['hello']">
+      <span tal:define="main load:templates/master.pt"
+            metal:use-macro="main.macros['hello']">
         <span metal:fill-slot="name">Chris</span>
       </span>
+    </html>
+    
+In addition :term:`Chameleon` allows ``metal:use-macro`` to point
+directly to a template instance instead of a macro. This will cause the
+entire template to be rendered, which can for example be used for
+"main-templates":
+
+Where ``templates/main.pt`` looks as follows:
+
+.. code-block:: xml
+    :linenos:
+    
+    <!DOCTYPE html>
+    <html metal:define-macro="main">
+        <head
+            <title metal:define-slot="title">A generic title</title>
+            <!-- Generic includes live here -->
+        </head>
+        <body>
+            <h1>Our Generic Header</h1>
+            <div metal:define-slot="content">
+            </div>
+        </body>
+    </html>
+
+Which can then be used in ``templates/mytemplate.pt`` like this:
+
+.. code-block:: xml
+    :linenos:
+    
+    <html metal:use-macro="load:templates/main.pt">
+        <title metal:fill-slot="title">A title</title>
+        <div metal:fill-slot="content">
+            Our Content
+        </div>
     </html>
 
 .. index::
