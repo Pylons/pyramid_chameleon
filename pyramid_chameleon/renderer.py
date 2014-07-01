@@ -7,7 +7,6 @@ import pkg_resources
 from zope.interface import implementer
 
 from pyramid.asset import asset_spec_from_abspath
-from pyramid.interfaces import ITemplateRenderer
 from pyramid.path import (
     caller_package,
     package_path
@@ -15,7 +14,8 @@ from pyramid.path import (
 
 from pyramid_chameleon.interfaces import (
     IChameleonLookup,
-    IChameleonTranslate
+    IChameleonTranslate,
+    ITemplateRenderer,
     )
 
 

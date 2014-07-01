@@ -37,16 +37,16 @@ class TextTemplateRendererTests(Base, unittest.TestCase):
         klass = self._getTargetClass()
         return klass(*arg, **kw)
 
-    def test_instance_implements_ITemplate(self):
+    def test_instance_implements_ITemplateRenderer(self):
         from zope.interface.verify import verifyObject
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         path = self._getTemplatePath('minimal.txt')
         lookup = DummyLookup()
         verifyObject(ITemplateRenderer, self._makeOne(path, lookup))
 
-    def test_class_implements_ITemplate(self):
+    def test_class_implements_ITemplateRenderer(self):
         from zope.interface.verify import verifyClass
-        from pyramid.interfaces import ITemplateRenderer
+        from pyramid_chameleon.interfaces import ITemplateRenderer
         verifyClass(ITemplateRenderer, self._getTargetClass())
 
     def test_template_reified(self):

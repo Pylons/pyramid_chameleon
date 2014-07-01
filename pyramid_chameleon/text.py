@@ -1,9 +1,8 @@
 from zope.interface import implementer
 
-from pyramid.interfaces import ITemplateRenderer
-
 from pyramid.decorator import reify
 from pyramid_chameleon import renderer
+from pyramid_chameleon.interfaces import ITemplateRenderer
 
 def renderer_factory(info):
     return renderer.template_renderer_factory(info, TextTemplateRenderer)

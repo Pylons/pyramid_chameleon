@@ -1,8 +1,8 @@
 from zope.interface import implementer
 
-from pyramid.interfaces import ITemplateRenderer
 from pyramid.decorator import reify
 from pyramid_chameleon import renderer
+from pyramid_chameleon.interfaces import ITemplateRenderer
 
 from chameleon.zpt.template import PageTemplateFile
 
