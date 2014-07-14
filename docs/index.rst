@@ -236,28 +236,36 @@ Where ``templates/master.pt`` might look like so:
 .. code-block:: xml
    :linenos:
 
-    <html xmlns="http://www.w3.org/1999/xhtml"
+   <html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:tal="http://xml.zope.org/namespaces/tal"
           xmlns:metal="http://xml.zope.org/namespaces/metal">
-      <span metal:define-macro="hello">
-        <h1>
-          Hello <span metal:define-slot="name">Fred</span>!
-        </h1>
-      </span>
-    </html>
+     <head>
+     </head>
+     <body>
+       <div metal:define-macro="hello">
+         <h1>
+           Hello <span metal:define-slot="name">Fred</span>!
+         </h1>
+       </div>
+     </body>
+   </html>
 
 And ``templates/mytemplate.pt`` might look like so:
 
 .. code-block:: xml
    :linenos:
 
-    <html xmlns="http://www.w3.org/1999/xhtml"
+   <html xmlns="http://www.w3.org/1999/xhtml"
           xmlns:tal="http://xml.zope.org/namespaces/tal"
           xmlns:metal="http://xml.zope.org/namespaces/metal">
-      <span metal:use-macro="main.macros['hello']">
-        <span metal:fill-slot="name">Chris</span>
-      </span>
-    </html>
+     <head>
+     </head>
+     <body>
+       <span metal:use-macro="main.macros['hello']">
+         <span metal:fill-slot="name">Chris</span>
+       </span>
+     </body>
+   </html>
 
 .. index::
    single: Chameleon text templates
