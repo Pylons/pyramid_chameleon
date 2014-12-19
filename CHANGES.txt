@@ -1,3 +1,8 @@
+Unreleased
+----------
+
+- Add support for PyPy3.
+
 0.3 (2014-07-01)
 ----------------
 
@@ -9,7 +14,7 @@
 0.2 (2014-02-09)
 ----------------
 
-- Dropped dependency on ``nose-selecttests``.
+- Drop dependency on ``nose-selecttests``.
 
 0.1 (2013-09-07)
 ----------------
