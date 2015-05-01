@@ -3,6 +3,9 @@ Unreleased
 
 - Add support for PyPy3.
 
+- Ensure we can build when CHANGES.txt and README.rst cannot be found by
+  setup.py.
+
 0.3 (2014-07-01)
 ----------------
 
