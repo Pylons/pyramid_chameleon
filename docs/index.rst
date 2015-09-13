@@ -270,6 +270,73 @@ And ``templates/mytemplate.pt`` might look like so:
 .. index::
    single: Chameleon text templates
 
+
+Using a master page
+~~~~~~~~~~~~~~~~~~~
+
+You can also use macros and slots to create a master page that can be used by all your templates. This is very similar to using a macro from another another template but uses the `IBeforeRender` event subscriber to make the macros availlable to any template.
+
+.. code-block:: python
+    :linenos:
+    
+    from pyramid.renderers import get_renderer
+    from pyramid.interfaces import IBeforeRender
+    from pyramid.events import subscriber
+
+    @subscriber(IBeforeRender)
+    def globals_factory(event):
+        master = get_renderer('templates/master.pt').implementation()
+        event['master'] = master
+
+Where ``templates/master.pt`` provides a whole page with slots to be filled by views:
+
+.. code-block:: xml
+    :linenos:
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title metal:define-slot="title"
+           tal:content="context/title | python:None"> Title goes here </title>
+      <meta tal:attributes="description context/description | python:None">
+
+      <link rel="stylesheet" href="/site/css/screen.css" media="screen">
+      <link rel="stylesheet" href="/site/css/print.css" media="print">
+
+      <metal:slot metal:define-slot="script" />
+      <metal:slot metal:define-slot="css" />
+
+    </head>
+      <body>
+        <nav>
+          <ul>
+              <li><a href="/">Home</a></li>
+            </ul>
+        </nav>
+        <section id="content">
+          <metal:slot metal:define-slot="body" />
+        </section>
+        <footer>&copy; Pylons Project</footer>
+      </body>
+    </html>
+
+And ``templates/index.pt`` fills the relevant slots:
+
+.. code-block:: xml
+    :linenos:
+
+    <metal:macro use-macro="master">
+      <metal:slot fill-slot="title">
+        <title>Welcome to Pyramid Chameleon</title>
+      </metal:slot>
+
+      <metal:slot fill-slot="body">
+        <h1>Pyramid Chameleon</h1>
+        <p>Chameleon is an XML-based templating language</p>
+      </metal:slot>
+    </metal:macro>
+
+
 .. _chameleon_text_templates:
 
 Chameleon Text Templates
