@@ -274,7 +274,10 @@ And ``templates/mytemplate.pt`` might look like so:
 Using a master page
 ~~~~~~~~~~~~~~~~~~~
 
-You can also use macros and slots to create a master page that can be used by all your templates. This is very similar to using a macro from another another template but uses the `IBeforeRender` event subscriber to make the macros availlable to any template.
+You can also use macros and slots to create a master page that can be used by
+all your templates. This is very similar to using a macro from another
+template but uses the `IBeforeRender` event subscriber to make the macros
+available to any template.
 
 .. code-block:: python
     :linenos:
@@ -288,10 +291,10 @@ You can also use macros and slots to create a master page that can be used by al
         master = get_renderer('templates/master.pt').implementation()
         event['master'] = master
 
-Where ``templates/master.pt`` provides a whole page with slots to be filled by views:
+Where ``templates/master.pt`` provides a whole page with slots to be filled by
+views:
 
-.. code-block:: xml
-    :linenos:
+.. code-block:: xml :linenos:
 
     <!DOCTYPE html>
     <html>
