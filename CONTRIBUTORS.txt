@@ -98,7 +98,7 @@ List of Contributors
 ====================
 
 The below-signed are contributors to a code repository that is part of the
-project named "pyramid_jinja2".  Each below-signed contributor has read,
+project named "pyramid_chameleon".  Each below-signed contributor has read,
 understand and agrees to the terms above in the section within this document
 entitled "Pylons Project Contributor Agreement" as of the date beside his or
 her name.
@@ -117,3 +117,5 @@ Reed O'Brien, 2012/03/12
 Bert JW Regeer, 2013-09-06
 
 Charlie Clark, 2016-02-01
+
+Jeremy Davis, 2016-02-01
