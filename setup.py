@@ -16,9 +16,10 @@ requires = [
     ]
 
 docs_extras = [
-    'Sphinx',
-    'docutils',
-    'repoze.sphinx.autointerface',
+   'Sphinx >= 1.3.1', # Read The Docs minimum version
+   'docutils',
+   'repoze.sphinx.autointerface',
+   'pylons-sphinx-themes',
     ]
 
 testing_extras = [
