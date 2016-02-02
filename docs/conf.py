@@ -25,36 +25,7 @@ import pkg_resources
 from docutils import nodes
 from docutils import utils
 
-# Add and use Pylons theme
-if 'sphinx-build' in ' '.join(sys.argv): # protect against dumb importers
-    from subprocess import call, Popen, PIPE
-
-    p = Popen('which git', shell=True, stdout=PIPE)
-    git = p.stdout.read().strip()
-    cwd = os.getcwd()
-    _themes = os.path.join(cwd, '_themes')
-
-    if not os.path.isdir(_themes):
-        call([git, 'clone', 'git://github.com/Pylons/pylons_sphinx_theme.git',
-                '_themes'])
-    else:
-        os.chdir(_themes)
-        call([git, 'checkout', 'master'])
-        call([git, 'pull'])
-        os.chdir(cwd)
-
-    sys.path.append(os.path.abspath('_themes'))
-
-    parent = os.path.dirname(os.path.dirname(__file__))
-    sys.path.append(os.path.abspath(parent))
-    wd = os.getcwd()
-    os.chdir(parent)
-    os.system('%s setup.py test -q' % sys.executable)
-    os.chdir(wd)
-
-    for item in os.listdir(parent):
-        if item.endswith('.egg'):
-            sys.path.append(os.path.join(parent, item))
+import pylons_sphinx_themes
 
 # General configuration
 # ---------------------
@@ -70,10 +41,12 @@ extensions = [
 # Looks for pyramid's objects
 intersphinx_mapping = {
     'pyramid':
-    ('http://docs.pylonsproject.org/projects/pyramid/en/latest/', None)}
+    ('http://docs.pylonsproject.org/projects/pyramid/en/latest/', None),
+    'chameleon': ('https://chameleon.readthedocs.org/en/latest/', None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['.templates']
+# templates_path = ['.templates']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -105,8 +78,7 @@ today_fmt = '%B %d, %Y'
 # List of directories, relative to source directories, that shouldn't be
 # searched for source files.
 #exclude_dirs = []
-
-exclude_patterns = ['_themes/README.rst',]
+# exclude_patterns = ['_themes/README.rst',]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -131,14 +103,12 @@ exclude_patterns = ['_themes/README.rst',]
 # -----------------------
 
 # Add and use Pylons theme
-sys.path.append(os.path.abspath('_themes'))
-html_theme_path = ['_themes']
 html_theme = 'pyramid'
-
-
-html_theme_options = {
-    'github_url': 'https://github.com/Pylons/pyramid_chameleon'
-}
+html_theme_path = pylons_sphinx_themes.get_html_themes_path()
+html_theme_options = dict(
+    github_url='https://github.com/Pylons/pyramid_chameleon',
+    canonical_url='http://docs.pylonsproject.org/projects/pyramid-chameleon/en/latest/',
+)
 
 
 # The style sheet to use for HTML and HTML Help pages. A file of that name
@@ -175,7 +145,7 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
-#html_use_smartypants = True
+html_use_smartypants = False
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
@@ -206,7 +176,7 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'atemplatedoc'
+htmlhelp_basename = 'pyramid_chameleon'
 
 
 # Options for LaTeX output
@@ -222,13 +192,13 @@ htmlhelp_basename = 'atemplatedoc'
 # (source start file, target name, title,
 #  author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'pyramid_chameleon.tex', 'pyramid_chameleon Documentation',
-   'Repoze Developers', 'manual'),
+  ('index', 'pyramid_chameleon.tex', u'pyramid_chameleon Documentation',
+   u'Pylons Project Contributors', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the
 # top of the title page.
-latex_logo = '.static/logo_hi.gif'
+# latex_logo = '.static/logo_hi.gif'
 
 # For "manual" documents, if this is true, then toplevel headings are
 # parts, not chapters.

@@ -9,12 +9,14 @@ Overview
 the :term:`Chameleon` templating system work under the Pyramid web
 framework.
 
+
 Installation
 ============
 
 Install using setuptools, e.g. (within a virtualenv)::
 
   $ $myvenv/bin/easy_install pyramid_chameleon
+
 
 Setup
 =====
@@ -37,9 +39,10 @@ They are completely equivalent:
 Once activated, files with the ``.pt`` extension are considered to be
 :term:`Chameleon` templates.
 
+
 .. _using_chameleon_templates:
 
-Using Chameleon Templates
+Using Chameleon templates
 =========================
 
 Once :mod:`pyramid_chameleon` been activated ``.pt`` templates can be loaded
@@ -105,24 +108,25 @@ registered imperatively:
     config.add_view('myproject.views.sample_view',
                     renderer='myproject:templates/foo.txt')
 
+
 .. _chameleon_zpt_templates:
 
-Chameleon ZPT Templates
+Chameleon ZPT templates
 -----------------------
 
-:term:`Chameleon` is an implementation of :term:`ZPT` (Zope Page
-Templates) templating language.  The Chameleon engine complies largely with 
-the `Zope Page Template <http://wiki.zope.org/ZPT/FrontPage>`_ template
+:term:`Chameleon` is an implementation of :term:`ZPT` (Zope Page Templates)
+templating language.  The Chameleon engine complies largely with the `Zope Page
+Template <http://docs.zope.org/zope2/zope2book/ZPT.html>`_ template
 specification.  However, it is significantly faster than the default
 implementation that is represented by ``zope.pagetemplates``.
 
-The language definition documentation for Chameleon ZPT-style
-templates is available from `the Chameleon website
-<http://chameleon.repoze.org/>`_.
+The language definition documentation for Chameleon ZPT-style templates is
+available from the `Chameleon website
+<https://chameleon.readthedocs.org/en/latest/>`_.
 
-Given a :term:`Chameleon` ZPT template named ``foo.pt`` in a directory
-in your application named ``templates``, you can render the template as
-a :term:`renderer` like so:
+Given a :term:`Chameleon` ZPT template named ``foo.pt`` in a directory in your
+application named ``templates``, you can render the template as a
+:term:`renderer` like so:
 
 .. code-block:: python
    :linenos:
@@ -161,10 +165,11 @@ information), ``context`` (the context resource of the view used to render
 the template), and ``request`` (the request passed to the view used to render
 the template).  ``request`` is also available as ``req`` in Pyramid 1.3+.
 
+
 .. index::
    single: ZPT template (sample)
 
-A Sample ZPT Template
+A sample ZPT template
 ~~~~~~~~~~~~~~~~~~~~~
 
 Here's what a simple :term:`Chameleon` ZPT template used under
@@ -198,11 +203,12 @@ of keywords passed in to it via :func:`~pyramid.renderers.render` or
 syntax (e.g. ``tal:content`` and ``tal:replace``) also works in these
 templates.
 
+
 .. index::
    single: ZPT macros
    single: Chameleon ZPT macros
 
-Using ZPT Macros in Pyramid
+Using ZPT macros in Pyramid
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When a :term:`renderer` is used to render a template, :app:`Pyramid` makes at
@@ -267,9 +273,11 @@ And ``templates/mytemplate.pt`` might look like so:
      </body>
    </html>
 
-.. index::
-   single: Chameleon text templates
 
+.. index::
+   single: Using a master page
+
+.. _using_master_page:
 
 Using a master page
 ~~~~~~~~~~~~~~~~~~~
@@ -294,7 +302,8 @@ available to any template.
 Where ``templates/master.pt`` provides a whole page with slots to be filled by
 views:
 
-.. code-block:: xml :linenos:
+.. code-block:: xml
+   :linenos:
 
     <!DOCTYPE html>
     <html>
@@ -340,9 +349,12 @@ And ``templates/index.pt`` fills the relevant slots:
     </metal:macro>
 
 
+.. index::
+   single: Chameleon text templates
+
 .. _chameleon_text_templates:
 
-Chameleon Text Templates
+Chameleon text templates
 ------------------------
 
 :mod:`pyramid_chameleon` also allows for the use of templates which are
@@ -381,14 +393,16 @@ indirection of using ``renderer`` in view configuration), see the functions
 in :mod:`pyramid.renderers` for APIs which allow you to render templates
 imperatively.
 
-Template Variables provided by Pyramid
+
+Template variables provided by Pyramid
 --------------------------------------
 
 Pyramid by default will provide a set of variables that are available within
 your templates, please see :ref:`renderer_system_values` for more information
 about those variables.
 
-Using A Chameleon Macro Name Within a Renderer Name
+
+Using a Chameleon macro name within a renderer name
 ---------------------------------------------------
 
 At times, you may want to render a macro inside of a Chameleon ZPT template
@@ -413,7 +427,7 @@ template instead of the entire template.
 .. index::
    single: template renderer side effects
 
-Side Effects of Rendering a Chameleon Template
+Side effects of rendering a Chameleon template
 ----------------------------------------------
 
 When a Chameleon template is rendered from a file, the templating
@@ -442,18 +456,18 @@ extension so that these ``svn:ignore`` patterns work.
 
 .. _debug_templates_section:
 
-Nicer Exceptions in Chameleon Templates
+Nicer exceptions in Chameleon templates
 ---------------------------------------
 
-The exceptions raised by Chameleon templates when a rendering fails
-are sometimes less than helpful.  :app:`Pyramid` allows you to
-configure your application development environment so that exceptions
-generated by Chameleon during template compilation and execution will
-contain nicer debugging information.
+The exceptions raised by Chameleon templates when a rendering fails are
+sometimes less than helpful.  :app:`Pyramid` allows you to configure your
+application development environment so that exceptions generated by Chameleon
+during template compilation and execution will contain nicer debugging
+information.
 
-.. warning:: Template-debugging behavior is not recommended for
-             production sites as it slows renderings; it's usually
-             only desirable during development.
+.. warning::
+ Template-debugging behavior is not recommended for production sites as it
+ slows renderings; it's usually only desirable during development.
 
 In order to turn on template exception debugging, you can use an
 environment variable setting or a configuration file setting.
@@ -514,9 +528,10 @@ displaying the arguments passed to the template itself.
 
    Turning on ``pyramid.debug_templates`` has the same effect as using the
    Chameleon environment variable ``CHAMELEON_DEBUG``.  See `Chameleon
-   Environment Variables
-   <http://chameleon.repoze.org/docs/latest/config.html#environment-variables>`_
+   Configuration
+   <https://chameleon.readthedocs.org/en/latest/configuration.html>`_
    for more information.
+
 
 .. index::
    single: automatic reloading of templates
@@ -524,7 +539,7 @@ displaying the arguments passed to the template itself.
 
 .. _reload_templates_section:
 
-Automatically Reloading Templates
+Automatically reloading templates
 ---------------------------------
 
 It's often convenient to see changes you make to a template file
@@ -559,6 +574,7 @@ application's configuration section, e.g.:
   use = egg:MyProject
   pyramid.reload_templates = true
 
+
 Settings
 --------
 
@@ -579,7 +595,8 @@ representing your Pyramid app) or they can be passed directly within the
   ``true`` or ``false`` representing whether Chameleon templates should be
    have extra debugging info turned on in tracebacks it generates.
 
-Changing the Content-Type of a Chameleon-Renderered Response
+
+Changing the Content-Type of a Chameleon-renderered response
 ------------------------------------------------------------
 
 Here's an example of changing the content-type and status of the
@@ -600,14 +617,14 @@ See :ref:`request_response_attr` for more information.
    single: template internationalization
    single: internationalization (of templates)
 
-Chameleon Template Internationalization
+Chameleon template internationalization
 ---------------------------------------
 
 Chameleon supports internationalized units of text by reusing the translation
 facilities provided within Pyramid. See :ref:`i18n_chapter` for a general
 description of these facilities.
 
-Translating Template Content
+Translating template content
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You need to add a few boilerplate lines to your application's ``setup.py``
@@ -646,7 +663,8 @@ Once this is done you can generate ``.pot`` files derived from your Chameleon
 templates (and Python code).  See :ref:`extracting_messages` in the Pyramid
 documentation for general information about this.
 
-Chameleon Template Support for Translation Strings
+
+Chameleon template support for translation strings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When a Pyramid "translation string" (see :ref:`i18n_chapter`) is used as the
@@ -660,30 +678,24 @@ represented by "some_translation_string" in each example below will go
 through translation before being rendered:
 
 .. code-block:: xml
-   :linenos:
 
    <span tal:content="some_translation_string"/>
 
 .. code-block:: xml
-   :linenos:
 
    <span tal:replace="some_translation_string"/>
 
 .. code-block:: xml
-   :linenos:
 
    <span>${some_translation_string}</span>
 
 .. code-block:: xml
-   :linenos:
 
    <a tal:attributes="href some_translation_string">Click here</a>
 
 The features represented by attributes of the ``i18n`` namespace of
 Chameleon will also consult the :app:`Pyramid` translations.
-See
-`http://chameleon.repoze.org/docs/latest/i18n.html#the-i18n-namespace
-<http://chameleon.repoze.org/docs/latest/i18n.html#the-i18n-namespace>`_.
+See :ref:`i18n`.
 
 .. note::
 
@@ -696,7 +708,8 @@ See
 You can always disuse this automatic translation and perform a more manual
 translation as described in :ref:`performing_a_translation`.
 
-Unit Testing
+
+Unit testing
 ------------
 
 When you are running unit tests, you will be required to use
@@ -727,7 +740,7 @@ its renderers are added to the config and can be used.::
             self.assertTrue('<html' in response.body)
 
 
-More Information
+More information
 ================
 
 .. toctree::
@@ -736,13 +749,15 @@ More Information
  glossary.rst
  api.rst
 
-Reporting Bugs / Development Versions
+
+Reporting bugs / development versions
 =====================================
 
 Visit http://github.com/Pylons/pyramid_chameleon to download development or 
 tagged versions.
 
 Visit http://github.com/Pylons/pyramid_chameleon/issues to report bugs.
+
 
 Indices and tables
 ------------------

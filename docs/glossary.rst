@@ -9,5 +9,5 @@ Glossary
    Chameleon
      Chameleon_ is an open-source template engine written in Python_.
 
-.. _Chameleon: http://pagetemplates.org
+.. _Chameleon: https://chameleon.readthedocs.org/en/latest/
 .. _Python: http://python.org
