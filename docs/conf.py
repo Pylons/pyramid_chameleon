@@ -42,7 +42,7 @@ extensions = [
 intersphinx_mapping = {
     'pyramid':
     ('http://docs.pylonsproject.org/projects/pyramid/en/latest/', None),
-    'chameleon': ('https://chameleon.readthedocs.org/en/latest/', None),
+    'chameleon': ('https://chameleon.readthedocs.io/en/latest/', None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
