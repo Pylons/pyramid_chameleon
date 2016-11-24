@@ -122,7 +122,7 @@ implementation that is represented by ``zope.pagetemplates``.
 
 The language definition documentation for Chameleon ZPT-style templates is
 available from the `Chameleon website
-<https://chameleon.readthedocs.org/en/latest/>`_.
+<https://chameleon.readthedocs.io/en/latest/>`_.
 
 Given a :term:`Chameleon` ZPT template named ``foo.pt`` in a directory in your
 application named ``templates``, you can render the template as a
@@ -529,7 +529,7 @@ displaying the arguments passed to the template itself.
    Turning on ``pyramid.debug_templates`` has the same effect as using the
    Chameleon environment variable ``CHAMELEON_DEBUG``.  See `Chameleon
    Configuration
-   <https://chameleon.readthedocs.org/en/latest/configuration.html>`_
+   <https://chameleon.readthedocs.io/en/latest/configuration.html>`_
    for more information.
 
 
