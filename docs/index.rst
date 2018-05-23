@@ -739,6 +739,20 @@ its renderers are added to the config and can be used.::
             # templates/home.pt starts with the standard <html> tag for HTML5
             self.assertTrue('<html' in response.body)
 
+Precompiling
+------------
+
+When first rendered, a Chameleon template is "compiled" to Python and
+then the resulting code is executed. The compiled Python code may then
+be stored to disk in a cache directory set in the `CHAMELEON_CACHE`
+environment variable.
+
+However compilation is relatively slow compared with execution, so the
+first time a view is rendered may be very slow. To work around this
+first request latency we offer a command line script to pre-compile
+templates to python. This is executed as follows::
+
+    $ CHAMELEON_CACHE=/path/to/put/precompiled/templates pyramid-chameleon-precompile --dir /path/to/look/for/templates
 
 More information
 ================
