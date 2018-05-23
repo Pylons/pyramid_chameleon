@@ -1,4 +1,3 @@
-#!/usr/bin/python
 """Script to pre-compile chameleon templates to the cache.
 
 This script is useful if the time to compile chameleon templates is
@@ -24,7 +23,8 @@ def walk_dir(
         directory,
         extensions=frozenset(['.pt']),
         template_factory=PyramidPageTemplateFile,
-        fail_fast=False):
+        fail_fast=False
+        ):
     for dirpath, dirnames, filenames in os.walk(directory):
         for filename in filenames:
             if filename.startswith('.'):
