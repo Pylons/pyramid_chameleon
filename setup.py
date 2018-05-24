@@ -62,5 +62,7 @@ setup(name='pyramid_chameleon',
           },
       test_suite="pyramid_chameleon",
       entry_points="""\
+      [console_scripts]
+      pyramid-chameleon-precompile = pyramid_chameleon.precompile:precompile
       """,
       )
