@@ -41,7 +41,7 @@ extensions = [
 # Looks for pyramid's objects
 intersphinx_mapping = {
     'pyramid':
-    ('http://docs.pylonsproject.org/projects/pyramid/en/latest/', None),
+    ('https://docs.pylonsproject.org/projects/pyramid/en/latest/', None),
     'chameleon': ('https://chameleon.readthedocs.io/en/latest/', None),
 }
 
@@ -107,7 +107,7 @@ html_theme = 'pyramid'
 html_theme_path = pylons_sphinx_themes.get_html_themes_path()
 html_theme_options = dict(
     github_url='https://github.com/Pylons/pyramid_chameleon',
-    canonical_url='http://docs.pylonsproject.org/projects/pyramid-chameleon/en/latest/',
+    canonical_url='https://docs.pylonsproject.org/projects/pyramid-chameleon/en/latest/',
 )
 
 
@@ -142,10 +142,6 @@ html_theme_options = dict(
 # If not '', a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.
 html_last_updated_fmt = '%b %d, %Y'
-
-# If true, SmartyPants will be used to convert quotes and dashes to
-# typographically correct entities.
-html_use_smartypants = False
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
