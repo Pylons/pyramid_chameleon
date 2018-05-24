@@ -1,15 +1,31 @@
 Contributing
 ============
 
-All projects under the Pylons Projects, including this one, follow the
-guidelines established at [How to
-Contribute](http://www.pylonsproject.org/community/how-to-contribute).
+All projects under the Pylons Projects, including this one, follow the guidelines established at [How to Contribute](https://pylonsproject.org/community-how-to-contribute.html) and [Coding Style and Standards](https://pylonsproject.org/community-coding-style-standards.html).
 
-You can contribute to this project in several ways.
 
-* [File an Issue on GitHub](https://github.com/Pylons/pyramid_chameleon/issues)
-* Fork this project and create a branch with your suggested change. When ready, submit a pull request for consideration. [GitHub Flow](https://guides.github.com/introduction/flow/index.html) describes the workflow process and why it's a good practice. When submitting a pull request, sign [CONTRIBUTORS.txt](https://github.com/Pylons/pyramid_chameleon/blob/master/CONTRIBUTORS.txt) if you have not yet done so.
-* Join the IRC channel #pyramid on irc.freenode.net.
+Get support
+-----------
+
+See [Get Support](https://pylonsproject.org/community-support.html). You are reading this document most likely because you want to *contribute* to the project and not *get support*.
+
+
+Working on issues
+-----------------
+
+To respect both your time and ours, we emphasize the following points.
+
+* We use the [Issue Tracker on GitHub](https://github.com/Pylons/pyramid_chameleon/issues) to discuss bugs, improvements, and feature requests. Search through existing issues before reporting a new one. Issues may be complex or wide-ranging. A discussion up front sets us all on the best path forward.
+* Minor issues—such as spelling, grammar, and syntax—don't require discussion and a pull request is sufficient.
+* After discussing the issue with maintainers and agreeing on a resolution, submit a pull request of your work. [GitHub Flow](https://guides.github.com/introduction/flow/index.html) describes the workflow process and why it's a good practice.
+* When submitting a pull request, sign [CONTRIBUTORS.txt](https://github.com/Pylons/pyramid_chameleon/blob/master/CONTRIBUTORS.txt) if you have not yet done so.
+
+
+Git branches
+------------
+
+There is a single branch [master](https://github.com/Pylons/waitress/) on which development takes place and from which releases to PyPI are tagged. This is the default branch on GitHub.
+
 
 Prerequisites
 -------------
@@ -20,21 +36,23 @@ Follow the instructions to install Pyramid and the tools needed to build its doc
 * You are encouraged to contribute to the official documentation.
 * No increased maintenance for the Pylons Project.
 
-Building documentation for a Pylons Project project
----------------------------------------------------
 
-*Note:* These instructions might not work for Windows users. Suggestions to improve the process for Windows users are welcome by submitting an issue or a pull request. Windows users may find it helpful to follow the guide [Installing Pyramid on a Windows System](http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/install.html#installing-pyramid-on-a-windows-system).
+Contributing documentation
+--------------------------
+
+*Note:* These instructions might not work for Windows users. Suggestions to improve the process for Windows users are welcome by submitting an issue or a pull request. Windows users may find it helpful to follow the guide [Installing Pyramid on a Windows System](https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/install.html#installing-pyramid-on-a-windows-system).
 
 1.  Fork the repo on GitHub by clicking the [Fork] button.
 2.  Clone your fork into a workspace on your local machine.
 
-         git@github.com:<username>/pyramid_chameleon.git
+         cd ~/projects
+         git clone git@github.com:<username>/pyramid_chameleon.git
 
 3.  Add a git remote "upstream" for the cloned fork.
 
          git remote add upstream git@github.com:Pylons/pyramid_chameleon.git
 
-4.  Set an environment variable as instructed in the [prerequisites](https://github.com/Pylons/pyramid/blob/master/HACKING.txt#L55-L58).
+4.  Set an environment variable to your virtual environment.
 
          # Mac and Linux
          $ export VENV=~/hack-on-pyramid/env
@@ -52,7 +70,7 @@ Building documentation for a Pylons Project project
 
      If successful, then you can make changes to the documentation. You can load the built documentation in the `/_build/html/` directory in a web browser.
 
-6.  From this point forward, follow the typical git workflow.  Start by pulling from the upstream to get the most current changes.
+6.  From this point forward, follow the typical [git workflow](https://help.github.com/articles/what-is-a-good-git-workflow/). Start by pulling from the upstream to get the most current changes.
 
          git pull upstream master
 
