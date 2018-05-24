@@ -116,7 +116,7 @@ Chameleon ZPT templates
 
 :term:`Chameleon` is an implementation of :term:`ZPT` (Zope Page Templates)
 templating language.  The Chameleon engine complies largely with the `Zope Page
-Template <http://docs.zope.org/zope2/zope2book/ZPT.html>`_ template
+Template <https://zope.readthedocs.io/en/latest/zope2book/ZPT.html>`_ template
 specification.  However, it is significantly faster than the default
 implementation that is represented by ``zope.pagetemplates``.
 
@@ -770,10 +770,10 @@ More information
 Reporting bugs / development versions
 =====================================
 
-Visit http://github.com/Pylons/pyramid_chameleon to download development or 
+Visit https://github.com/Pylons/pyramid_chameleon to download development or
 tagged versions.
 
-Visit http://github.com/Pylons/pyramid_chameleon/issues to report bugs.
+Visit https://github.com/Pylons/pyramid_chameleon/issues to report bugs.
 
 
 Indices and tables
