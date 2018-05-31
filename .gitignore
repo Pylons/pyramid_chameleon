@@ -1,8 +1,10 @@
-.coverage
+.coverage*
 .tox/
 coverage.xml
+*-cover.xml
 env*/
-nosetests.xml
+nosetests*.xml
 *.egg-info/
 *.pyc
 dist/
+.python-version
