@@ -15,6 +15,11 @@ from multiprocessing import Pool
 import chameleon.config
 from pyramid_chameleon.zpt import PyramidPageTemplateFile
 
+def _compile_one(args):
+    fullpath = args[0]
+    template_factory = args[1]
+    return compile_one(fullpath, template_factory)
+
 def compile_one(fullpath, template_factory=PyramidPageTemplateFile):
     try:
         assert chameleon.config.CACHE_DIRECTORY is not None
@@ -46,8 +51,9 @@ def walk_dir(
         fail_fast=False,
         jobs=1
         ):
-    with Pool(jobs) as p:
-        return p.starmap(compile_one, [(fullpath, template_factory) for fullpath in _walk_dir(directory, extensions)])
+    pool = Pool(processes=jobs)
+    mapped_args = [(fullpath, template_factory) for fullpath in _walk_dir(directory, extensions)]
+    return pool.map(_compile_one, mapped_args)
 
 def precompile(argv=sys.argv):
     parser = optparse.OptionParser(usage="""usage: %prog [options]
