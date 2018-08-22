@@ -1,6 +1,8 @@
 0.4 (unreleased)
 ----------------
 
+- Add new command ``pyramid-chameleon-precompile``.
+
 - Remove support for Python 2.6 and 3.2.
 
 - Add support for PyPy3.
