@@ -10,21 +10,24 @@ import os
 import sys
 import logging
 import optparse
+from multiprocessing import Pool
 
 import chameleon.config
 from pyramid_chameleon.zpt import PyramidPageTemplateFile
 
 def compile_one(fullpath, template_factory=PyramidPageTemplateFile):
-    assert chameleon.config.CACHE_DIRECTORY is not None
-    template = template_factory(fullpath, macro=None)
-    template.cook_check()
+    try:
+        assert chameleon.config.CACHE_DIRECTORY is not None
+        template = template_factory(fullpath, macro=None)
+        template.cook_check()
+    except:
+        logging.warn('Failed to compile: %s' % fullpath)
+        return dict(path=fullpath, success=False)
+    logging.debug('Compiled: %s' % fullpath)
+    return dict(path=fullpath, success=True)
 
-def walk_dir(
-        directory,
-        extensions=frozenset(['.pt']),
-        template_factory=PyramidPageTemplateFile,
-        fail_fast=False
-        ):
+def _walk_dir(directory, extensions):
+    ret = []
     for dirpath, dirnames, filenames in os.walk(directory):
         for filename in filenames:
             if filename.startswith('.'):
@@ -33,20 +36,18 @@ def walk_dir(
             if ext not in extensions:
                 continue
             fullpath = os.path.join(dirpath, filename)
-            try:
-                compile_one(fullpath, template_factory=template_factory)
-            except:
-                if fail_fast:
-                    raise
-                yield dict(
-                    path=fullpath,
-                    success=False)
-                logging.warn('Failed to compile: %s' % fullpath)
-                continue
-            logging.debug('Compiled: %s' % fullpath)
-            yield dict(
-                path=fullpath,
-                success=True)
+            ret.append(fullpath)
+    return ret
+
+def walk_dir(
+        directory,
+        extensions=frozenset(['.pt']),
+        template_factory=PyramidPageTemplateFile,
+        fail_fast=False,
+        jobs=1
+        ):
+    with Pool(jobs) as p:
+        return p.starmap(compile_one, [(fullpath, template_factory) for fullpath in _walk_dir(directory, extensions)])
 
 def precompile(argv=sys.argv):
     parser = optparse.OptionParser(usage="""usage: %prog [options]
@@ -83,6 +84,12 @@ compiled.
             dest="loglevel",
             help="set the loglevel, see the logging module for possible values",
             default='INFO')
+    parser.add_option(
+            "--jobs",
+            type=int,
+            dest="jobs",
+            help="set the N compile jobs",
+            default=1)
     options, args = parser.parse_args(argv)
     loglevel = getattr(logging, options.loglevel)
     logging.basicConfig(level=loglevel)
@@ -98,7 +105,7 @@ compiled.
         exts = ['.pt']
     exts = set(exts)
     success = total = 0
-    for f in walk_dir(options.dir, extensions=exts, fail_fast=options.fail_fast):
+    for f in walk_dir(options.dir, extensions=exts, fail_fast=options.fail_fast, jobs=options.jobs):
         total += 1
         if f['success']:
             success += 1
