@@ -144,7 +144,14 @@ html_theme_options = dict(
 html_last_updated_fmt = '%b %d, %Y'
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+# Control display of sidebars and include ethical ads from RTD
+html_sidebars = {'**': [
+    'localtoc.html',
+    'ethicalads.html',
+    'relations.html',
+    'sourcelink.html',
+    'searchbox.html',
+]}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -173,6 +180,9 @@ html_last_updated_fmt = '%b %d, %Y'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'pyramid_chameleon'
+
+# Do not use smart quotes.
+smartquotes = False
 
 
 # Options for LaTeX output
