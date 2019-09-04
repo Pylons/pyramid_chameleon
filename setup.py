@@ -16,7 +16,7 @@ requires = [
     ]
 
 docs_extras = [
-   'Sphinx >= 1.3.1', # Read The Docs minimum version
+   'Sphinx >= 1.7.4',
    'docutils',
    'repoze.sphinx.autointerface',
    'pylons-sphinx-themes',
@@ -42,6 +42,7 @@ setup(name='pyramid_chameleon',
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Intended Audience :: Developers",
