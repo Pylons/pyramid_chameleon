@@ -596,8 +596,8 @@ representing your Pyramid app) or they can be passed directly within the
    have extra debugging info turned on in tracebacks it generates.
 
 
-Changing the Content-Type of a Chameleon-renderered response
-------------------------------------------------------------
+Changing the Content-Type of a Chameleon-rendered response
+----------------------------------------------------------
 
 Here's an example of changing the content-type and status of the
 response object returned by a Chameleon-rendered Pyramid view:
