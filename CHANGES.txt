@@ -1,6 +1,8 @@
 0.4 (unreleased)
 ----------------
 
+- Add new command ``pyramid-chameleon-precompile``.
+
 - Update the repo to standards.  See
   https://github.com/Pylons/pyramid_chameleon/issues/22
 
