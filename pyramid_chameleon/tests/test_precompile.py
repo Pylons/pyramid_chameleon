@@ -19,7 +19,7 @@ class Test_functional(unittest.TestCase):
     def test_works(self):
         from pyramid_chameleon.precompile import precompile
         result = precompile(argv=['bin', '--dir', self._getTemplateDir()])
-        self.assertEquals(result, 0)
+        self.assertEqual(result, 0)
 
     def tearDown(self):
         import chameleon.config

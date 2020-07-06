@@ -6,4 +6,4 @@ These are bindings for the `Chameleon templating system
 https://docs.pylonsproject.org/projects/pyramid_chameleon/en/latest/ for
 documentation.
 
-.. _Pyramid: https://pylonsproject.org/
+.. _Pyramid: https://trypyramid.com/

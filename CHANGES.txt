@@ -3,7 +3,12 @@
 
 - Add new command ``pyramid-chameleon-precompile``.
 
-- Remove support for Python 2.6 and 3.2.
+- Update the repo to standards.  See
+  https://github.com/Pylons/pyramid_chameleon/issues/22
+
+- Add support for Python 3.5, 3.6, and 3.7
+
+- Remove support for Python 2.6, 3.2, and 3.3.
 
 - Add support for PyPy3.
 

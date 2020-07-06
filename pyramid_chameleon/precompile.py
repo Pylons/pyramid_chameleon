@@ -103,7 +103,6 @@ compiled.
             default=1)
     options, args = parser.parse_args(argv)
     loglevel = getattr(logging, options.loglevel)
-    logging.basicConfig(level=loglevel)
     if chameleon.config.CACHE_DIRECTORY is None:
         logging.error('The CHAMELEON_CACHE environment variable must be specified')
         return 1
@@ -127,4 +126,5 @@ compiled.
     return 0
 
 if __name__ == '__main__':
+    logging.basicConfig(level=loglevel)
     sys.exit(precompile())
