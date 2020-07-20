@@ -49,6 +49,7 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         lookup = DummyLookup()
         instance = self._makeOne(boolattrs, lookup)
         result = instance({}, {})
+        self.assertTrue(isinstance(instance.template.boolean_attributes, set))
         self.assertTrue(isinstance(result, text_type))
         self.assertEqual(result.rstrip('\n'),
              '<?xml version="1.0" ?>\n<input type="input" checked="checked" />')
