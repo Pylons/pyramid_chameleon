@@ -1,7 +1,6 @@
 import sys
 import unittest
 
-from pyramid.compat import binary_type
 from pyramid import testing
 
 class Base(object):
@@ -97,7 +96,7 @@ class TextTemplateRendererTests(Base, unittest.TestCase):
         lookup = DummyLookup()
         instance = self._makeOne(minimal, lookup)
         result = instance({}, {})
-        self.assertTrue(isinstance(result, binary_type))
+        self.assertTrue(isinstance(result, bytes))
         self.assertEqual(result, b'Hello.\n')
 
     def test_call_with_nondict_value(self):
@@ -111,7 +110,7 @@ class TextTemplateRendererTests(Base, unittest.TestCase):
         lookup = DummyLookup()
         instance = self._makeOne(nonminimal, lookup)
         result = instance({'name':'Chris'}, {})
-        self.assertTrue(isinstance(result, binary_type))
+        self.assertTrue(isinstance(result, bytes))
         self.assertEqual(result, b'Hello, Chris!\n')
 
     def test_implementation(self):
@@ -119,7 +118,7 @@ class TextTemplateRendererTests(Base, unittest.TestCase):
         lookup = DummyLookup()
         instance = self._makeOne(minimal, lookup)
         result = instance.implementation()()
-        self.assertTrue(isinstance(result, binary_type))
+        self.assertTrue(isinstance(result, bytes))
         self.assertEqual(result, b'Hello.\n')
 
 class DummyLookup(object):
