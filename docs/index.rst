@@ -502,7 +502,7 @@ from rendering a template with an undefined variable
   NameError: wrong
 
 Note that the exception has no information about which template was
-being rendered when the error occured.  But with template debugging
+being rendered when the error occurred.  But with template debugging
 on, an exception resulting from the same problem might end like so:
 
 .. code-block:: text
