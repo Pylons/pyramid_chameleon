@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-from pyramid.compat import binary_type
+from ._compat import binary_type
 from pyramid import testing
 
 class Base(object):
