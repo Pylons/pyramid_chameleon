@@ -21,10 +21,10 @@ def _compile_one(args):
         compile_one(fullpath, template_factory)
     except KeyboardInterrupt:
         return dict(path=fullpath, success=False)
-    except:
+    except Exception as e:
         if fail_fast:
             raise
-        logging.warning('Failed to compile: %s' % fullpath)
+        logging.error('Failed to compile: %s' % fullpath, exc_info=e)
         return dict(path=fullpath, success=False)
     logging.debug('Compiled: %s' % fullpath)
     return dict(path=fullpath, success=True)
