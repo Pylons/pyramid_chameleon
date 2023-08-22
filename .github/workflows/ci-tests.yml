@@ -25,7 +25,7 @@ jobs:
                 os:
                     - "ubuntu-20.04"
                     - "windows-2022"
-                    # - "macos-11"
+                    - "macos-11"
                 architecture:
                     - x64
                     - x86
