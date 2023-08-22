@@ -27,12 +27,13 @@ class Test__compile_one(unittest.TestCase):
         try:
             import pyramid_chameleon.precompile
             _old = pyramid_chameleon.precompile.compile_one
-            def compile_one_raise(fullpath, template_factory):
+            def compile_one_raise(fullpath, cache_dir, template_factory):
                 self.assertEqual(fullpath, None)
+                self.assertEqual(cache_dir, None)
                 self.assertEqual(template_factory, None)
                 raise KeyboardInterrupt()
             pyramid_chameleon.precompile.compile_one = compile_one_raise
-            result = self._callFUT((None, None, None))
+            result = self._callFUT((None, None, None, None))
             self.assertEqual(result, {'path':None, 'success':False})
         finally:
             pyramid_chameleon.precompile.compile_one = _old
@@ -41,12 +42,14 @@ class Test__compile_one(unittest.TestCase):
         try:
             import pyramid_chameleon.precompile
             _old = pyramid_chameleon.precompile.compile_one
-            def compile_one_raise(fullpath, template_factory):
+            def compile_one_raise(fullpath, cache_dir, template_factory):
                 self.assertEqual(fullpath, None)
+                self.assertEqual(cache_dir, None)
                 self.assertEqual(template_factory, None)
                 raise ValueError()
             pyramid_chameleon.precompile.compile_one = compile_one_raise
-            self.assertRaises(ValueError, self._callFUT, (None, None, True))
+            self.assertRaises(ValueError, self._callFUT,
+                              (None, None, True, None))
         finally:
             pyramid_chameleon.precompile.compile_one = _old
 
@@ -54,12 +57,13 @@ class Test__compile_one(unittest.TestCase):
         try:
             import pyramid_chameleon.precompile
             _old = pyramid_chameleon.precompile.compile_one
-            def compile_one_raise(fullpath, template_factory):
+            def compile_one_raise(fullpath, cache_dir, template_factory):
                 self.assertEqual(fullpath, None)
+                self.assertEqual(cache_dir, None)
                 self.assertEqual(template_factory, None)
                 raise ValueError()
             pyramid_chameleon.precompile.compile_one = compile_one_raise
-            result = self._callFUT((None, None, False))
+            result = self._callFUT((None, None, False, None))
             self.assertEqual(result, {'path':None, 'success':False})
         finally:
             pyramid_chameleon.precompile.compile_one = _old
@@ -74,7 +78,7 @@ class Test__compile_one(unittest.TestCase):
             def cook_check(innerself):
                 innerself.checked = True
         factory = DummyTemplateFactory()
-        result = self._callFUT((templatepath, factory, False))
+        result = self._callFUT((templatepath, factory, False, None))
         self.assertEqual(result, {'path':templatepath, 'success':True})
         self.assertTrue(factory.checked)
 
@@ -97,14 +101,10 @@ class Test_functional(unittest.TestCase):
 
     def test_no_cache_dir(self):
         import chameleon.config
-        try:
-            _old = chameleon.config.CACHE_DIRECTORY
-            chameleon.config.CACHE_DIRECTORY = None
-            from pyramid_chameleon.precompile import precompile
-            result = precompile(argv=['bin', '--dir', self._getTemplateDir()])
-            self.assertEqual(result, 1)
-        finally:
-            chameleon.config.CACHE_DIRECTORY = _old
+        chameleon.config.CACHE_DIRECTORY = None
+        from pyramid_chameleon.precompile import precompile
+        result = precompile(argv=['bin', '--dir', self._getTemplateDir()])
+        self.assertEqual(result, 1)
 
     def test_posargs(self):
         from pyramid_chameleon.precompile import precompile

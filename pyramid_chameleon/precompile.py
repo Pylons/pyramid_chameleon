@@ -16,9 +16,14 @@ import chameleon.config
 from pyramid_chameleon.zpt import PyramidPageTemplateFile
 
 def _compile_one(args):
-    fullpath, template_factory, fail_fast = args[0], args[1], args[2]
+    fullpath, template_factory, fail_fast, cache_dir = (
+        args[0],
+        args[1],
+        args[2],
+        args[3],
+        )
     try:
-        compile_one(fullpath, template_factory)
+        compile_one(fullpath, cache_dir, template_factory)
     except KeyboardInterrupt:
         return dict(path=fullpath, success=False)
     except Exception as e:
@@ -29,8 +34,8 @@ def _compile_one(args):
     logging.debug('Compiled: %s' % fullpath)
     return dict(path=fullpath, success=True)
 
-def compile_one(fullpath, template_factory=PyramidPageTemplateFile):
-    assert chameleon.config.CACHE_DIRECTORY is not None
+def compile_one(fullpath, cache_dir, template_factory=PyramidPageTemplateFile):
+    chameleon.config.CACHE_DIRECTORY = cache_dir
     template = template_factory(fullpath, macro=None)
     template.cook_check()
 
@@ -49,14 +54,15 @@ def _walk_dir(directory, extensions):
 
 def walk_dir(
         directory,
+        cache_dir,
         extensions=frozenset(['.pt']),
         template_factory=PyramidPageTemplateFile,
         fail_fast=False,
-        jobs=1
+        jobs=1,
         ):
     pool = Pool(processes=jobs)
     mapped_args = [
-        (fullpath, template_factory, fail_fast)
+        (fullpath, template_factory, fail_fast, cache_dir)
         for fullpath in _walk_dir(directory, extensions)
     ]
     try:
@@ -110,7 +116,8 @@ compiled.
     options, args = parser.parse_args(argv)
     loglevel = getattr(logging, options.loglevel)
     logging.basicConfig(level=loglevel)
-    if chameleon.config.CACHE_DIRECTORY is None:
+    cache_dir = chameleon.config.CACHE_DIRECTORY
+    if cache_dir is None:
         logging.error(
             'The CHAMELEON_CACHE environment variable must be specified'
         )
@@ -128,9 +135,10 @@ compiled.
     success = total = 0
     for f in walk_dir(
             options.dir,
+            cache_dir,
             extensions=exts,
             fail_fast=options.fail_fast,
-            jobs=options.jobs
+            jobs=options.jobs,
     ):
         total += 1
         if f['success']:
