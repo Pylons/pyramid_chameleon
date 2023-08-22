@@ -2,7 +2,6 @@ import sys
 import unittest
 
 from pyramid import testing
-from ._compat import text_type
 
 class Base(object):
     def setUp(self):
@@ -54,7 +53,7 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         lookup = DummyLookup()
         instance = self._makeOne(minimal, lookup)
         result = instance({}, {})
-        self.assertTrue(isinstance(result, text_type))
+        self.assertTrue(isinstance(result, str))
         self.assertEqual(result.rstrip('\n'),
                      '<div xmlns="http://www.w3.org/1999/xhtml">\n</div>')
 
@@ -121,7 +120,7 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         lookup = DummyLookup()
         instance = self._makeOne(minimal, lookup)
         result = instance.implementation()()
-        self.assertTrue(isinstance(result, text_type))
+        self.assertTrue(isinstance(result, str))
         self.assertEqual(result.rstrip('\n'),
                      '<div xmlns="http://www.w3.org/1999/xhtml">\n</div>')
 

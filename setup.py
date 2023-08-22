@@ -23,9 +23,9 @@ docs_extras = [
     ]
 
 testing_extras = [
-    'nose',
+    'pytest',
+    'pytest-cov',
     'coverage',
-    'virtualenv', # for scaffolding tests
     ]
 
 setup(name='pyramid_chameleon',
