@@ -97,10 +97,14 @@ class Test_functional(unittest.TestCase):
 
     def test_no_cache_dir(self):
         import chameleon.config
-        chameleon.config.CACHE_DIRECTORY = None
-        from pyramid_chameleon.precompile import precompile
-        result = precompile(argv=['bin', '--dir', self._getTemplateDir()])
-        self.assertEqual(result, 1)
+        try:
+            _old = chameleon.config.CACHE_DIRECTORY
+            chameleon.config.CACHE_DIRECTORY = None
+            from pyramid_chameleon.precompile import precompile
+            result = precompile(argv=['bin', '--dir', self._getTemplateDir()])
+            self.assertEqual(result, 1)
+        finally:
+            chameleon.config.CACHE_DIRECTORY = _old
 
     def test_posargs(self):
         from pyramid_chameleon.precompile import precompile
