@@ -1,6 +1,16 @@
 0.4 (unreleased)
 ----------------
 
+- Add boolean HTML attributes per Chameleon 3.8.0.
+
+  All checkboxes, radios, and selects that use boolean HTML attributes
+  (selected, checked, etc.) previously used ``literal_false`` and would drop
+  any ``False`` value from rendering as an HTML attribute. In Chameleon 3.8.0,
+  ``literal_false`` is removed and must instead use ``boolean_attributes`` to
+  set defaults.
+
+  See https://github.com/Pylons/pyramid_chameleon/issues/30
+
 - Add new command ``pyramid-chameleon-precompile``.
 
 - Update the repo to standards.  See

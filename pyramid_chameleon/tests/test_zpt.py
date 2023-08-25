@@ -36,6 +36,24 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         klass = self._getTargetClass()
         return klass(*arg, **kw)
 
+    def test_boolean_attributes(self):
+        boolattrs = self._getTemplatePath('boolattrs.pt')
+        lookup = DummyLookup()
+        instance = self._makeOne(boolattrs, lookup)
+        result = instance({}, {})
+        self.assertEqual(result.rstrip('\n'), '<input type="input" />')
+
+    def test_boolean_attributes_xml(self):
+        boolattrs = self._getTemplatePath('boolattrsxml.pt')
+        lookup = DummyLookup()
+        instance = self._makeOne(boolattrs, lookup)
+        result = instance({}, {})
+        self.assertTrue(isinstance(instance.template.boolean_attributes, set))
+        self.assertTrue(len(instance.template.boolean_attributes) == 0)
+        self.assertTrue(isinstance(result, text_type))
+        self.assertEqual(result.rstrip('\n'),
+             '<?xml version="1.0" ?>\n<input type="input" checked="checked" />')
+
     def test_instance_implements_ITemplateRenderer(self):
         from zope.interface.verify import verifyObject
         from pyramid_chameleon.interfaces import ITemplateRenderer
@@ -171,4 +189,3 @@ class DummyInfo(object):
         self.name = 'fixtures/minimal.pt'
         self.package = sys.modules[__name__]
         self.settings = {}
-    
