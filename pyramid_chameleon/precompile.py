@@ -21,7 +21,7 @@ def _compile_one(args):
         args[1],
         args[2],
         args[3],
-        )
+ )
     try:
         compile_one(fullpath, cache_dir, template_factory)
     except KeyboardInterrupt:
@@ -113,13 +113,20 @@ compiled.
             dest="jobs",
             help="set the N compile jobs",
             default=1)
+    parser.add_option(
+            "--cache-dir",
+            dest="cache_dir",
+            help="Use this directory as the Chameleon cache directory.  Either "
+                 "this option or the CHAMELEON_CACHE environment variable"
+                 "must be specified"),
     options, args = parser.parse_args(argv)
     loglevel = getattr(logging, options.loglevel)
     logging.basicConfig(level=loglevel)
-    cache_dir = chameleon.config.CACHE_DIRECTORY
+    cache_dir = options.cache_dir or chameleon.config.CACHE_DIRECTORY
     if cache_dir is None:
         logging.error(
-            'The CHAMELEON_CACHE environment variable must be specified'
+            "Either the --cache_dir option or the the CHAMELEON_CACHE "
+            "environment variable must be specified"
         )
         return 1
     if len(args) > 1:

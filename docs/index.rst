@@ -756,23 +756,23 @@ templates to python. This is executed as follows:
 
     $ CHAMELEON_CACHE=/path/to/put/precompiled/templates \
         pyramid-chameleon-precompile --dir /path/to/look/for/templates
+        -- cache-dir /path/to/store/the/compiled/templates
 
 To further speed up the precompilation, use the ``--jobs <integer>`` option
-with an integer specifying the number of parallel jobs to run on a multiprocessor computer.
-With the ``--jobs`` option, the duration of compilation can be reduced by about one-third
-in projects with over 300 templates, as in this example using ``time``.
-This is executed as follows:
-
+with an integer specifying the number of parallel jobs to run on a
+multiprocessor computer.  With the ``--jobs`` option, the duration of
+compilation can be reduced by about one-third in projects with over 300
+templates, as in this example using ``time``.  This is executed as follows:
 
 .. code-block:: bash
 
-    $ time CHAMELEON_CACHE=~/tmp_chameleoncache pyramid-chameleon-precompile --dir ~/template_files --jobs 1
+    $ time pyramid-chameleon-precompile --dir ~/template_files --jobs 1 --cache-dir ~/tmp_chameleoncache
     INFO:root:Compiled 318 out of 318 found templates
-    CHAMELEON_CACHE=~/tmp_chameleoncache pyramid-chameleon-precompile --dir   1  63.78s user 1.04s system 92% cpu 1:09.71 total
+    63.78s user 1.04s system 92% cpu 1:09.71 total
     $ rm -rf ~/tmp_chameleoncache/*
-    $ time CHAMELEON_CACHE=~/tmp_chameleoncache pyramid-chameleon-precompile --dir ~/template_files --jobs 2
+    $ time CHAMELEON_CACHE=~/tmp_chameleoncache pyramid-chameleon-precompile --dir ~/template_files --jobs 2 --cache-dir ~/tmp_chameleoncache
     INFO:root:Compiled 318 out of 318 found templates
-    CHAMELEON_CACHE=~/tmp_chameleoncache pyramid-chameleon-precompile --dir   2  78.24s user 1.07s system 172% cpu 45.959 total
+    78.24s user 1.07s system 172% cpu 45.959 total
 
 
 More information
