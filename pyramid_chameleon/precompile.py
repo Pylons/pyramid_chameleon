@@ -16,23 +16,26 @@ import chameleon.config
 from pyramid_chameleon.zpt import PyramidPageTemplateFile
 
 def _compile_one(args):
-    fullpath = args[0]
-    template_factory = args[1]
-    fail_fast = args[2]
+    fullpath, template_factory, fail_fast, cache_dir = (
+        args[0],
+        args[1],
+        args[2],
+        args[3],
+ )
     try:
-        compile_one(fullpath, template_factory)
+        compile_one(fullpath, cache_dir, template_factory)
     except KeyboardInterrupt:
         return dict(path=fullpath, success=False)
-    except:
+    except Exception as e:
         if fail_fast:
             raise
-        logging.warn('Failed to compile: %s' % fullpath)
+        logging.error('Failed to compile: %s' % fullpath, exc_info=e)
         return dict(path=fullpath, success=False)
     logging.debug('Compiled: %s' % fullpath)
     return dict(path=fullpath, success=True)
 
-def compile_one(fullpath, template_factory=PyramidPageTemplateFile):
-    assert chameleon.config.CACHE_DIRECTORY is not None
+def compile_one(fullpath, cache_dir, template_factory=PyramidPageTemplateFile):
+    chameleon.config.CACHE_DIRECTORY = cache_dir
     template = template_factory(fullpath, macro=None)
     template.cook_check()
 
@@ -51,14 +54,23 @@ def _walk_dir(directory, extensions):
 
 def walk_dir(
         directory,
+        cache_dir,
         extensions=frozenset(['.pt']),
         template_factory=PyramidPageTemplateFile,
         fail_fast=False,
-        jobs=1
+        jobs=1,
         ):
     pool = Pool(processes=jobs)
-    mapped_args = [(fullpath, template_factory, fail_fast) for fullpath in _walk_dir(directory, extensions)]
-    return pool.map(_compile_one, mapped_args)
+    mapped_args = [
+        (fullpath, template_factory, fail_fast, cache_dir)
+        for fullpath in _walk_dir(directory, extensions)
+    ]
+    try:
+        for result in pool.map(_compile_one, mapped_args):
+            yield result
+    finally:
+        pool.close()
+        pool.join()
 
 def precompile(argv=sys.argv):
     parser = optparse.OptionParser(usage="""usage: %prog [options]
@@ -81,7 +93,7 @@ compiled.
     parser.add_option(
             "--dir",
             dest="dir",
-            help="The directory to search for tempaltes. "
+            help="The directory to search for templates. "
                  "Will be recursively searched")
     parser.add_option(
             "--ext",
@@ -101,30 +113,50 @@ compiled.
             dest="jobs",
             help="set the N compile jobs",
             default=1)
+    parser.add_option(
+            "--cache-dir",
+            dest="cache_dir",
+            help="Use this directory as the Chameleon cache directory.  Either "
+                 "this option or the CHAMELEON_CACHE environment variable"
+                 "must be specified"),
     options, args = parser.parse_args(argv)
     loglevel = getattr(logging, options.loglevel)
-    if chameleon.config.CACHE_DIRECTORY is None:
-        logging.error('The CHAMELEON_CACHE environment variable must be specified')
+    logging.basicConfig(level=loglevel)
+    cache_dir = options.cache_dir or chameleon.config.CACHE_DIRECTORY
+    if cache_dir is None:
+        logging.error(
+            "Either the --cache_dir option or the the CHAMELEON_CACHE "
+            "environment variable must be specified"
+        )
         return 1
     if len(args) > 1:
         msg = ' '.join(args[1:])
-        logging.error('This command takes only keyword arguments, got: %s' % msg)
+        logging.error(
+            'This command takes only keyword arguments, got: %s' % msg
+        )
         return 1
     exts = options.exts
     if not exts:
         exts = ['.pt']
     exts = set(exts)
     success = total = 0
-    for f in walk_dir(options.dir, extensions=exts, fail_fast=options.fail_fast, jobs=options.jobs):
+    for f in walk_dir(
+            options.dir,
+            cache_dir,
+            extensions=exts,
+            fail_fast=options.fail_fast,
+            jobs=options.jobs,
+    ):
         total += 1
         if f['success']:
             success += 1
     logging.info('Compiled %s out of %s found templates' % (success, total))
     if not success:
-        logging.error("No templates successfully compiled out of %s found" % total)
+        logging.error(
+            "No templates successfully compiled out of %s found" % total
+        )
         return 1
     return 0
 
-if __name__ == '__main__':
-    logging.basicConfig(level=loglevel)
+if __name__ == '__main__': # pragma: no cover
     sys.exit(precompile())
