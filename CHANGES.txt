@@ -17,6 +17,8 @@
 
 - Drop reliance on (now non-existent in 2.0) ``pyramid.compat``.
 
+- Modernize test and build systems.
+
 0.3 (2014-07-01)
 ----------------
 
