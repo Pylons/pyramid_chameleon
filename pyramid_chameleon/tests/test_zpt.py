@@ -36,21 +36,34 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         klass = self._getTargetClass()
         return klass(*arg, **kw)
 
-    def test_boolean_attributes(self):
+    def test_boolean_attributes_nonxml(self):
         boolattrs = self._getTemplatePath('boolattrs.pt')
         lookup = DummyLookup()
         instance = self._makeOne(boolattrs, lookup)
-        result = instance({}, {})
-        self.assertEqual(result.rstrip('\n'), '<input type="input" />')
+        result = instance({}, {'checked':False})
+        self.assertEqual(
+            result.rstrip('\n'),
+            '<input type="checkbox" />'
+        )
+        result = instance({'checked':True}, {})
+        self.assertEqual(
+            result.rstrip('\n'),
+            '<input type="checkbox" checked/>'
+        )
 
     def test_boolean_attributes_xml(self):
         boolattrs = self._getTemplatePath('boolattrsxml.pt')
         lookup = DummyLookup()
         instance = self._makeOne(boolattrs, lookup)
-        result = instance({}, {})
         self.assertTrue(isinstance(instance.template.boolean_attributes, set))
         self.assertTrue(len(instance.template.boolean_attributes) == 0)
-        self.assertTrue(isinstance(result, text_type))
+        result = instance({}, {'checked':False})
+        self.assertEqual(result.rstrip('\n'),
+             '<?xml version="1.0" ?>\n<input type="input" checked="False"/>')
+        result = instance({}, {'checked':True})
+        self.assertEqual(result.rstrip('\n'),
+             '<?xml version="1.0" ?>\n<input type="input" checked="True"/>')
+        result = instance({}, {'checked':'checked'})
         self.assertEqual(result.rstrip('\n'),
              '<?xml version="1.0" ?>\n<input type="input" checked="checked" />')
 
@@ -172,7 +185,7 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
 class DummyLookup(object):
     auto_reload=True
     debug = True
-    def translate(self, msg): pass
+    def translate(self, *arg, **kw): pass
 
 class DummyRegistry(object):
     def queryUtility(self, iface, name):

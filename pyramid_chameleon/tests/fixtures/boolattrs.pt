@@ -1,1 +1,1 @@
-<input type="input" tal:attributes="checked False" />
+<input type="checkbox" tal:attributes="checked True" />
