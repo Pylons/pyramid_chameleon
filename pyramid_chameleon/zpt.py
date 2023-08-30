@@ -34,7 +34,7 @@ def renderer_factory(info):
 class PyramidPageTemplateFile(PageTemplateFile):
     @property
     def boolean_attributes(self):
-        if self.content_type == "text/xml":
+        if getattr(self, 'content_type', None) == "text/xml":
             return set()
         return BOOLEAN_HTML_ATTRS
 

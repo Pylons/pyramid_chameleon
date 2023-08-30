@@ -55,8 +55,6 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         boolattrs = self._getTemplatePath('boolattrsxml.pt')
         lookup = DummyLookup()
         instance = self._makeOne(boolattrs, lookup)
-        self.assertTrue(isinstance(instance.template.boolean_attributes, set))
-        self.assertTrue(len(instance.template.boolean_attributes) == 0)
         result = instance({}, {'checked':False})
         self.assertEqual(result.rstrip('\n'),
              '<?xml version="1.0" ?>\n<input type="input" checked="False"/>')
@@ -66,6 +64,8 @@ class ZPTTemplateRendererTests(Base, unittest.TestCase):
         result = instance({}, {'checked':'checked'})
         self.assertEqual(result.rstrip('\n'),
              '<?xml version="1.0" ?>\n<input type="input" checked="checked" />')
+        self.assertTrue(isinstance(instance.template.boolean_attributes, set))
+        self.assertTrue(len(instance.template.boolean_attributes) == 0)
 
     def test_instance_implements_ITemplateRenderer(self):
         from zope.interface.verify import verifyObject
