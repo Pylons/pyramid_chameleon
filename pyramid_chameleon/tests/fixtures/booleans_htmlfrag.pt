@@ -1,0 +1,6 @@
+<form>
+  <tal:block repeat="button buttons">
+      <input type="radio" selected="${button['selected']}" name="${button['name']}"
+             value="${button['value']}">
+  </tal:block>
+</form>

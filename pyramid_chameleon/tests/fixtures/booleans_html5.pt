@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Title of document</title>
+</head>
+<body>
+  <form>
+    <tal:block repeat="button buttons">
+      <input name="${button['name']}" selected="${button['selected']}"
+             type="radio"
+             value="${button['value']}">
+    </tal:block>
+  </form>
+</body>
+</html>
