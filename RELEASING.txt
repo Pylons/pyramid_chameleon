@@ -23,7 +23,8 @@ Prepare new release
 
   Make sure statement coverage is at 100% (the test run will fail if not).
 
-- Run tests on Windows if feasible.
+- Ensure the Github CI "build and test" action is passing on the master branch.
+  This also tests Windows and Mac.
 
 - Ensure all features of the release are documented (audit CHANGES.txt or
   communicate with contributors).
@@ -33,19 +34,16 @@ Prepare new release
 - Minor releases should include a link under "Bug Fix Releases" to the minor
   feature changes in CHANGES.txt.
 
-- Change setup.py version to the release version number.
+- Change setup.cfg version to the release version number.
 
-- Make sure PyPI long description renders (requires ``readme_renderer``
-  installed into your Python)::
-
-  $ python setup.py check -r -s -m
+- Run ``tox -e build``.  This will verify that the readme renders properly,
+  that the MANIFEST.in matches what is checked in to Git, and will build a
+  wheel and tar.gz release within ``dist``.
 
 - Create a release tag.
 
-- Make sure your Python has ``setuptools-git``, ``twine``, and ``wheel``
-  installed and release to PyPI::
+- Upload using ``twine``.
 
-  $ python setup.py sdist bdist_wheel
   $ twine upload dist/pyramid_chameleon-X.X-*
 
 

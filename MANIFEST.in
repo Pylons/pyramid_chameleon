@@ -1,0 +1,9 @@
+include *.md
+include *.txt
+include tox.ini
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs Makefile
+recursive-include pyramid_chameleon *.pt
+recursive-include pyramid_chameleon *.shouldbeignored
+recursive-include pyramid_chameleon *.txt
