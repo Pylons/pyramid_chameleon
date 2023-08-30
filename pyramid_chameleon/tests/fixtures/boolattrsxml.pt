@@ -1,0 +1,2 @@
+<?xml version="1.0" ?>
+<input type="input" checked="checked" tal:attributes="checked default" />

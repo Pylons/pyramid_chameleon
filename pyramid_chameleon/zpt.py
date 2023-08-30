@@ -6,10 +6,38 @@ from pyramid_chameleon.interfaces import ITemplateRenderer
 
 from chameleon.zpt.template import PageTemplateFile
 
+
+BOOLEAN_HTML_ATTRS = frozenset(
+    [
+        # List of Boolean attributes in HTML that should be rendered in
+        # minimized form (e.g. <img ismap> rather than <img ismap="">)
+        # From http://www.w3.org/TR/xhtml1/#guidelines (C.10)
+        "compact",
+        "nowrap",
+        "ismap",
+        "declare",
+        "noshade",
+        "checked",
+        "disabled",
+        "readonly",
+        "multiple",
+        "selected",
+        "noresize",
+        "defer",
+    ]
+)
+
+
 def renderer_factory(info):
     return renderer.template_renderer_factory(info, ZPTTemplateRenderer)
 
 class PyramidPageTemplateFile(PageTemplateFile):
+    @property
+    def boolean_attributes(self):
+        if self.content_type == "text/xml":
+            return set()
+        return BOOLEAN_HTML_ATTRS
+
     def cook(self, body):
         PageTemplateFile.cook(self, body)
         if self.macro:
