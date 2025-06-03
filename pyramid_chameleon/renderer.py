@@ -2,11 +2,19 @@ import os
 import re
 import threading
 
-import pkg_resources
+try:
+    # we need to try the backport first, as we rely on ``files`` added in 3.9
+    import importlib_resources
+except ImportError:
+    import importlib.resources as importlib_resources
 
 from zope.interface import implementer
 
-from pyramid.asset import asset_spec_from_abspath
+from pyramid.asset import (
+    asset_spec_from_abspath,
+    resolve_asset_spec,
+    )
+
 from pyramid.path import (
     caller_package,
     package_path
@@ -33,31 +41,13 @@ class ChameleonRendererLookup(object):
         self.lock = threading.Lock()
 
     def get_spec(self, name, package):
+        (package, name) = resolve_asset_spec(name, package)
+
         if not package:
             # if there's no package, we can't do any conversion
             return name
 
-        spec = name
-        isabspath = os.path.isabs(name)
-        colon_in_name = ':' in name
-        isabsspec = colon_in_name and (not isabspath)
-        isrelspec = (not isabsspec) and (not isabspath)
-
-        # if it's already an absolute spec, we don't need to do anything,
-        # but if it's a relative spec or an absolute path, we need to try
-        # to convert it to an absolute spec
-
-        if isrelspec:
-            # convert relative asset spec to absolute asset spec
-            pp = package_path(package)
-            spec = os.path.join(pp, spec)
-            spec = asset_spec_from_abspath(spec, package)
-
-        elif isabspath:
-            # convert absolute path to absolute asset spec
-            spec = asset_spec_from_abspath(spec, package)
-
-        return spec
+        return "%s:%s" % (package, name)
 
     @property # wait until completely necessary to look up translator
     def translate(self):
@@ -111,14 +101,13 @@ class ChameleonRendererLookup(object):
                     # should die
                     package_name = caller_package(4).__name__
                     filename = spec_without_macro
-                abspath = pkg_resources.resource_filename(package_name,
-                                                          filename)
-                if not pkg_resources.resource_exists(package_name, filename):
+                files = importlib_resources.files(package_name)
+                if not files.joinpath(filename).exists():
                     raise ValueError(
                         'Missing template asset: %s (%s)' % (
-                            spec_without_macro, abspath)
+                            spec_without_macro, filename)
                         )
-                renderer = self.impl(abspath, self, macro=macro)
+                renderer = self.impl(spec, self, macro=macro)
                 settings = info.settings
                 if not settings.get('reload_assets'):
                     # cache the template
