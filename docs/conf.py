@@ -20,7 +20,7 @@
 import datetime
 import sys
 import os
-import pkg_resources
+from importlib.metadata import version as get_version
 
 from docutils import nodes
 from docutils import utils
@@ -62,7 +62,7 @@ copyright = '2011-%s, Pylons Project' % datetime.datetime.now().year
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = pkg_resources.get_distribution('pyramid_chameleon').version
+version = get_version('pyramid_chameleon')
 # The full version, including alpha/beta/rc tags.
 release = version
 
