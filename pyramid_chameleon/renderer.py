@@ -2,12 +2,11 @@ import os
 import re
 import threading
 
-import pkg_resources
-
 from zope.interface import implementer
 
 from pyramid.asset import asset_spec_from_abspath
 from pyramid.path import (
+    AssetResolver,
     caller_package,
     package_path
     )
@@ -111,9 +110,9 @@ class ChameleonRendererLookup(object):
                     # should die
                     package_name = caller_package(4).__name__
                     filename = spec_without_macro
-                abspath = pkg_resources.resource_filename(package_name,
-                                                          filename)
-                if not pkg_resources.resource_exists(package_name, filename):
+                resolved = AssetResolver(package_name).resolve(filename)
+                abspath = resolved.abspath()
+                if not resolved.exists():
                     raise ValueError(
                         'Missing template asset: %s (%s)' % (
                             spec_without_macro, abspath)

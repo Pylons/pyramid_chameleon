@@ -1,4 +1,4 @@
-0.4 (unreleased)
+1.0 (unreleased)
 ----------------
 
 - Add new command ``pyramid-chameleon-precompile``.
@@ -18,6 +18,8 @@
 - Drop reliance on (now non-existent in 2.0) ``pyramid.compat``.
 
 - Modernize test and build systems.
+
+- Add compatability to newest setuptools without pkg_resources.
 
 0.3 (2014-07-01)
 ----------------
